@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 export default function Navbar() {
   return (
-    <div className="flex items-center justify-between w-full p-2">
+    <div className="flex items-center justify-between w-full px-5 py-10">
       <div>
         <div className="flex items-center justify-center gap-2">
           <AssignmentOutlinedIcon />
