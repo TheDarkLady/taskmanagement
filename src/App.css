@@ -78,3 +78,37 @@
   font-size: 32px !important;
 }
 
+.login-para{
+  color: #000000;
+  font-family: "Urbanist", serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.login-second-part{
+  background-image: url('../src/assets/circles_bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* height: 80vh; */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 0px 50px 20px;
+}
+
+.login-page-desktop-container{
+  display: flex;
+}
+
+.login-page-mobile-container{
+  display: none;
+}
+@media only screen and (max-width: 768px) {
+  .login-page-desktop-container{
+    display: none;
+  }
+  .login-page-mobile-container{
+    display: flex;
+  }
+}
