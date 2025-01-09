@@ -64,7 +64,17 @@
     @apply bg-background text-foreground;
   }
 }
-
-.logo-icon{
+.login-page-heading{
+  font-family: "Urbanist", serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 37px;
+  text-align: left;
   color:#7b1984
 }
+
+.logo-icon{
+  color:#7b1984;
+  font-size: 32px !important;
+}
+

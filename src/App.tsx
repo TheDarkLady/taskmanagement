@@ -1,17 +1,17 @@
-import './App.css'
-import { Button } from "./components/ui/button"
-import Navbar from './views/Navbar'
-
+import './App.css';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 function App() {
 
   return (
     <>
-      <Navbar/>
-      <div className='flex flex-col gap-4 items-center justify-center h-full'>
-        {/* <h3 className='font-bold text-2xl'>Hello</h3>
-        <Button>Button</Button> */}
-        
-      </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<Login/>} />
+      <Route path='/dashboard' element={<Dashboard/>} />
+    </Routes>
+    </BrowserRouter>
     </>
   )
 }
