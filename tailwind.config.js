@@ -6,6 +6,10 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+	fontFamily: {
+		'mulish': ['Mulish'],
+		'urbanish' : ['Urbanist']
+	  },
   	extend: {
   		borderRadius: {
   			lg: 'var(--radius)',
