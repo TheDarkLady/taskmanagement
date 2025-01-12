@@ -128,11 +128,8 @@
 .add-task-btn {
   border-radius: 20px;
   padding: 10px 35px;
-}
-
-.add-task-btn:hover {
-  background-color: #7b1984;
-  color: #fff;
+  background-color: #7b1984 !important;
+  color: #fff !important;
 }
 
 .heading-bar-para {
