@@ -98,6 +98,7 @@ function Dashboard() {
           <div className="w-[20%] flex items-center justify-start">
             <p className="heading-bar-para dark:text-[#fff]">Task Category</p>
           </div>
+          <div className="w-[10%] flex items-center justify-start relative">E/D</div>
         </div>
         <Todo />
         <InProgress />
