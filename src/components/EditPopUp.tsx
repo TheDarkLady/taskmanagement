@@ -2,7 +2,7 @@ import React from 'react'
 
 function EditPopUp() {
   return (
-    <div>
+    <div >
       
     </div>
   )

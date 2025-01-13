@@ -7,6 +7,17 @@ import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Task {
   taskTitle: string;
@@ -19,7 +30,7 @@ const Todo: React.FC = () => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showDatePick, setShowDatePick] = useState<boolean>(false);
-  const [showEditDelete, setShowEditDelete] = useState<boolean>(false);
+  const [showEditDelete, setShowEditDelete] = useState<number | null>(null);
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -58,10 +69,10 @@ const Todo: React.FC = () => {
     openAddTask();
   };
 
-  const handleDeleteTask = (index:number) =>{
-    const newTaskList = taskList.filter((task, i) => i !== index)
-    setTaskList(newTaskList)
-  }
+  const handleDeleteTask = (index: number) => {
+    const newTaskList = taskList.filter((task, i) => i !== index);
+    setTaskList(newTaskList);
+  };
   const resetTaskInputs = () => {
     setTaskTitle("");
     setSelectedDate(null);
@@ -122,9 +133,9 @@ const Todo: React.FC = () => {
               onClick={() => setShowDatePick(!showDatePick)}
             >
               <SlCalender />
-              {
-                selectedDate === null ? "Add Date" : selectedDate?.toDateString()
-              }
+              {selectedDate === null
+                ? "Add Date"
+                : selectedDate?.toDateString()}
             </Button>
             {showDatePick && (
               <DatePicker
@@ -142,9 +153,7 @@ const Todo: React.FC = () => {
               className="heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => setShowStatus(!showStatus)}
             >
-              {
-                status === "" ? <GoPlus className="fill-[#00000066]" /> : status
-              }
+              {status === "" ? <GoPlus className="fill-[#00000066]" /> : status}
             </Button>
             {showStatus && (
               <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
@@ -185,17 +194,19 @@ const Todo: React.FC = () => {
               className="heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => setShowCategory(!showCategory)}
             >
-              {
-                category === "" ? <GoPlus className="fill-[#00000066]" /> : category
-              }
+              {category === "" ? (
+                <GoPlus className="fill-[#00000066]" />
+              ) : (
+                category
+              )}
             </Button>
             {showCategory && (
               <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
                 <ul className="flex flex-col">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() =>{
-                      setCategory("general");
+                    onClick={() => {
+                      setCategory("work");
                       setShowCategory(!showCategory);
                     }}
                   >
@@ -203,7 +214,7 @@ const Todo: React.FC = () => {
                   </li>
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() =>{
+                    onClick={() => {
                       setCategory("personal");
                       setShowCategory(!showCategory);
                     }}
@@ -241,18 +252,82 @@ const Todo: React.FC = () => {
               <div className="w-[20%] flex items-start justify-start relative">
                 <p>{task.category}</p>
               </div>
-              
+
               <div className="w-[10%] flex items-start justify-start relative">
-                <BiDotsHorizontalRounded onClick={()=>setShowEditDelete(!showEditDelete)}/>
-                {showEditDelete && (
+                <BiDotsHorizontalRounded
+                  onClick={() =>
+                    setShowEditDelete(showEditDelete === index ? null : index)
+                  }
+                />
+                {showEditDelete === index && (
                   <div className="absolute top-4 left-0 w-[150px] bg-white border rounded shadow-md z-10">
                     <ul className="flex flex-col">
-                      <li
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => console.log("Edit")}
-                      >
-                        Edit
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <Dialog>
+                          <DialogTrigger>
+                            <span>Edit</span>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle className="font-mulish font-semibold text-2xl text-[#2f2f2f]">
+                                Edit Task
+                              </DialogTitle>
+                              <DialogDescription>
+                                Modify the task details below.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="taskTitle"
+                                  className="text-right"
+                                >
+                                  Task Title
+                                </Label>
+                                <Input
+                                  id="taskTitle"
+                                  value={
+                                    taskList[showEditDelete!]?.taskTitle || ""
+                                  }
+                                  onChange={(e) => {
+                                    const updatedTaskList = [...taskList];
+                                    updatedTaskList[showEditDelete!] = {
+                                      ...updatedTaskList[showEditDelete!],
+                                      taskTitle: e.target.value,
+                                    };
+                                    setTaskList(updatedTaskList);
+                                  }}
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="category"
+                                  className="text-right"
+                                >
+                                  Category
+                                </Label>
+                                <Input
+                                  id="category"
+                                  value={
+                                    taskList[showEditDelete!]?.category || ""
+                                  }
+                                  onChange={(e) => {
+                                    const updatedTaskList = [...taskList];
+                                    updatedTaskList[showEditDelete!] = {
+                                      ...updatedTaskList[showEditDelete!],
+                                      category: e.target.value,
+                                    };
+                                    setTaskList(updatedTaskList);
+                                  }}
+                                  className="col-span-3"
+                                />
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </li>
+
                       <li
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
