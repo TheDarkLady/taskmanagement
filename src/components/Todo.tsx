@@ -73,7 +73,13 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
 
   return (
     <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
-      <div className="w-full py-5 px-5 flex items-center justify-between rounded-t-xl ">
+      <div className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
+    componentStatus === "In Progress"
+      ? "bg-[#85D9F1]" 
+      : componentStatus === "completed"
+      ? "bg-[#CEFFCC]" 
+      : "bg-[#FAC3FF]" 
+  }`}>
         <p className="text-[#000] font-semibold text-base">
           {componentStatus} ({taskList.length})
         </p>
