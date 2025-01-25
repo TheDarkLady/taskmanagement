@@ -7,33 +7,9 @@ import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import EditPopUp from "./EditPopUp";
+import {Task} from "../types/Task";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-
-interface Task {
-  taskTitle: string;
-  selectedDate: Date | null;
-  status: string;
-  category: string;
-}
 
 const Todo: React.FC = () => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
@@ -106,7 +82,7 @@ const Todo: React.FC = () => {
           Add Task
         </p>
       </div>
-      <div className="flex flex-col hidden addtask">
+      <div className=" flex-col hidden addtask">
         <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
           <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
             <input
@@ -247,12 +223,12 @@ const Todo: React.FC = () => {
               <div className="w-[20%] flex flex-col items-start justify-start gap-[5px]">
                 <p>
                   {task.selectedDate?.toDateString() ===
-                    new Date().toDateString()
+                  new Date().toDateString()
                     ? "Today"
                     : ` ${task.selectedDate?.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                    })}${" "}, ${task.selectedDate?.getFullYear()}`}
+                        day: "2-digit",
+                        month: "short",
+                      })}${" "}, ${task.selectedDate?.getFullYear()}`}
                 </p>
               </div>
               <div className="w-[20%] flex items-start justify-start relative">
@@ -265,155 +241,17 @@ const Todo: React.FC = () => {
               <div className="w-[10%] flex items-start justify-start relative">
                 <BiDotsHorizontalRounded
                   onClick={() => {
-                    setShowEditDelete(showEditDelete === index ? null : index)
-                    console.log("showEditDelete", showEditDelete)
-                  }
-                  }
+                    setShowEditDelete(showEditDelete === index ? null : index);
+                    console.log("showEditDelete", showEditDelete);
+                  }}
                 />
                 {showEditDelete === index && (
-                  <div className="absolute top-4 left-0 w-[150px] bg-white border rounded shadow-md z-10">
-                    <ul className="flex flex-col">
-                      <li className="px-0 py-0 hover:bg-gray-100 cursor-pointer">
-                        <Dialog classList="p-0">
-                          <DialogTrigger>
-                            <span>Edit</span>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle className="font-mulish font-semibold text-2xl text-[#2f2f2f]">
-                                Create Task
-                              </DialogTitle>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-1 items-center gap-4">
-                                <Label
-                                  htmlFor="taskTitle"
-                                  className="text-left"
-                                >
-                                  Task Title
-                                </Label>
-                                <Input
-                                  id="taskTitle"
-                                  value={
-                                    taskList[showEditDelete!]?.taskTitle || ""
-                                  }
-                                  onChange={(e) => {
-                                    const updatedTaskList = [...taskList];
-                                    updatedTaskList[showEditDelete!] = {
-                                      ...updatedTaskList[showEditDelete!],
-                                      taskTitle: e.target.value,
-                                    };
-                                    setTaskList(updatedTaskList);
-                                  }}
-                                  className="col-span-3"
-                                />
-                              </div>
-                              <div className="grid grid-cols-1 items-center gap-4">
-                                <Label
-                                  htmlFor="category"
-                                  className="text-left"
-                                >
-                                  Description
-                                </Label>
-                                <textarea
-                                  id="Description"
-                                  className="col-span-3"
-                                />
-                              </div>
-                              <div className="grid grid-cols-3 items-center gap-4">
-                                <div className="flex flex-col justify-center items-left">
-                                  <p>Task Category</p>
-                                  <div className="flex flex-row gap-2 justify-space-between items-left">
-                                    <Button className="bg-transperent text-grey px-2 py-2 rounded-2xl flex items-center border border-grey-100">work</Button>
-                                    <Button className="bg-transperent text-grey px-2 py-2 rounded-2xl flex items-center border border-grey-100">Personal</Button>
-                                  </div>
-                                </div>
-                                <div className="flex flex-col justify-center items-left">
-                                  <p>Due On</p>
-                                  <div className="flex flex-row gap-2 justify-space-between items-left">
-                                    <DatePicker
-                                      selected={taskList[showEditDelete!]?.selectedDate || ""}
-                                      onChange={(date: Date) => setSelectedDate(date)}
-                                      dateFormat="dd/MM/yyyy"
-                                      placeholderText="Select a date"
-                                      className="py-2 px-4 border border-gray-300 rounded-md w-full"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex flex-col justify-center items-left">
-                                  <p>Status</p>
-                                  <div className="flex flex-row gap-2 justify-space-between items-left">
-                                    <Select
-                                      defaultValue={taskList[showEditDelete]?.status}
-                                      value={taskList[showEditDelete!]?.status || "todo"} // Use `value` for controlled input
-                                      onValueChange={(value) => {
-                                        console.log(taskList[showEditDelete!]?.status)
-                                        const updatedTaskList = [...taskList];
-                                        updatedTaskList[showEditDelete!] = {
-                                          ...updatedTaskList[showEditDelete!],
-                                          status: value,
-                                        };
-                                        setTaskList(updatedTaskList); // Update the state with the modified task list
-                                      }}
-                                    >
-                                      <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select Status" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="todo">Todo</SelectItem>
-                                        <SelectItem value="In Progress">In-Progress</SelectItem>
-                                        <SelectItem value="Completed">Completed</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-
-                                  </div>
-                                </div>
-
-                              </div>
-                              <div className="grid grid-cols-1 items-center gap-4">
-                                <Label htmlFor="taskFile" className="text-left">
-                                  Attachment
-                                </Label>
-                                <input
-                                  id="taskFile"
-                                  type="file"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0] || null; // Get the selected file
-                                    const updatedTaskList = [...taskList];
-                                    updatedTaskList[showEditDelete!] = {
-                                      ...updatedTaskList[showEditDelete!],
-                                      attachment: file, // Add or update the file in the task
-                                    };
-                                    setTaskList(updatedTaskList);
-                                  }}
-                                  className="col-span-3 border border-gray-300 rounded-md p-2"
-                                />
-                                {taskList[showEditDelete!]?.attachment && (
-                                  <p className="text-sm text-gray-500">
-                                    Attached: {taskList[showEditDelete!]?.attachment.name}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="bg-[#f1f1f1] w-full flex flex-row justify-end items-center gap-4 p-2">
-                                <Button className="bg-transparent text-grey px-2 py-2 rounded-2xl flex items-center border border-grey-100">Cancel</Button>
-                                <Button className="bg-[#7B1984] text-[#fff] px-2 py-2 rounded-2xl flex items-center border border-grey-100">Create</Button>
-
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </li>
-
-                      <li
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleDeleteTask(index);
-                        }}
-                      >
-                        Delete
-                      </li>
-                    </ul>
-                  </div>
+                  <EditPopUp
+                    taskList={taskList}
+                    setTaskList={setTaskList}
+                    showEditDelete={showEditDelete}
+                    handleDeleteTask={handleDeleteTask}
+                  />
                 )}
               </div>
             </div>
