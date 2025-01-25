@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { FaAngleUp } from "react-icons/fa6";
 import { GoPlus } from "react-icons/go";
@@ -8,10 +8,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
-import {Task} from "../types/Task";
+import { Task } from "../types/Task";
+import InProgress from "./InProgress";
+import Completed from "./Completed";
 
+interface Props {
+  componentStatus: String;
+  taskList: Task[];
+  setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
+}
 
-const Todo: React.FC = () => {
+const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showDatePick, setShowDatePick] = useState<boolean>(false);
@@ -20,7 +27,6 @@ const Todo: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [taskList, setTaskList] = useState<Task[]>([]);
 
   const openAddTask = () => {
     const addTask = document.querySelector(".addtask");
@@ -66,22 +72,24 @@ const Todo: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-[#f1f1f1] rounded-lg">
-      <div className="w-full bg-[#FAC3FF] py-5 px-5 flex items-center justify-between rounded-t-xl">
+    <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
+      <div className="w-full py-5 px-5 flex items-center justify-between rounded-t-xl ">
         <p className="text-[#000] font-semibold text-base">
-          Todo ({taskList.length})
+          {componentStatus} ({taskList.length})
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
       </div>
-      <div
-        className="w-full py-6 px-10 flex flex-row justify-start items-center gap-2 cursor-pointer"
-        onClick={openAddTask}
-      >
-        <GoPlus className="fill-[#7B1984]" />
-        <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase">
-          Add Task
-        </p>
-      </div>
+      {componentStatus == "todo" && (
+        <div
+          className="w-full py-6 px-10 flex flex-row justify-start items-center gap-2 cursor-pointer"
+          onClick={openAddTask}
+        >
+          <GoPlus className="fill-[#7B1984]" />
+          <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase">
+            Add Task
+          </p>
+        </div>
+      )}
       <div className=" flex-col hidden addtask">
         <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
           <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
@@ -164,7 +172,7 @@ const Todo: React.FC = () => {
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => {
-                      setStatus("Completed");
+                      setStatus("completed");
                       setShowStatus(!showStatus);
                     }}
                   >
@@ -213,7 +221,10 @@ const Todo: React.FC = () => {
           <div className="w-[10%] flex items-center justify-start relative"></div>
         </div>
       </div>
-      {taskList.map((task, index) => {
+
+      {taskList.filter((allTask)=>{
+        return allTask.status === componentStatus
+      }).map((task, index) => {
         return (
           <div key={index}>
             <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
@@ -245,6 +256,7 @@ const Todo: React.FC = () => {
                     console.log("showEditDelete", showEditDelete);
                   }}
                 />
+
                 {showEditDelete === index && (
                   <EditPopUp
                     taskList={taskList}

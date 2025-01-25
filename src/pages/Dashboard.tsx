@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../views/Navbar";
 import { Button } from "../components/ui/button";
 import listIcon from "../assets/list-icon.svg";
@@ -7,10 +7,17 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { CiSearch } from "react-icons/ci";
 import { FaSort } from "react-icons/fa6";
 import Todo from "../components/Todo";
-import InProgress from "../components/InProgress";
-import Completed from "../components/Completed";
+import { Task } from "../types/Task";
 
 function Dashboard() {
+
+    const [taskList, setTaskList] = useState<Task[]>([]);
+
+    useEffect(()=>{
+    },[taskList])
+
+    const statusOfTasks = ["todo", "In Progress", "completed"];
+
   return (
     <div className="mx-10">
       <Navbar />
@@ -100,9 +107,16 @@ function Dashboard() {
           </div>
           <div className="w-[10%] flex items-center justify-start relative">E/D</div>
         </div>
-        <Todo />
-        <InProgress />
-        <Completed />
+        {
+          statusOfTasks.map((status, index) => {
+            return (
+              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList} />
+
+            )
+          }
+        )}
+        {/* <InProgress /> */}
+        {/* <Completed /> */}
       </div>
     </div>
   );
