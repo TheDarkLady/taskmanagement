@@ -70,6 +70,16 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setStatus("");
     setCategory("");
   };
+  let todoLen = taskList.filter((task) => {
+    return task.status === "todo"
+  })
+  let inProgresLen = taskList.filter((task)=>{
+    return task.status === "In Progress"
+  })
+  let completedLen = taskList.filter((task)=> {
+    return task.status === "completed"
+  })
+  
 
   return (
     <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
@@ -81,7 +91,13 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
       : "bg-[#FAC3FF]" 
   }`}>
         <p className="text-[#000] font-semibold text-base">
-          {componentStatus} ({taskList.length})
+          
+          {componentStatus} ({
+          componentStatus === "todo" ? todoLen.length : 
+          componentStatus === "In progress" ? inProgresLen.length : 
+          componentStatus === "completed" ? completedLen.length : 
+          0
+          })
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
       </div>

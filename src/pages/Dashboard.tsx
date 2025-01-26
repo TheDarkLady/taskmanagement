@@ -115,8 +115,7 @@ function Dashboard() {
             )
           }
         )}
-        {/* <InProgress /> */}
-        {/* <Completed /> */}
+        
       </div>
     </div>
   );
