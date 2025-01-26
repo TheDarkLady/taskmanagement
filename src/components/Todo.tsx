@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "../components/ui/button";
 import { FaAngleUp } from "react-icons/fa6";
 import { GoPlus } from "react-icons/go";
@@ -70,15 +70,18 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setStatus("");
     setCategory("");
   };
-  let todoLen = taskList.filter((task) => {
-    return task.status === "todo"
-  })
-  let inProgresLen = taskList.filter((task)=>{
-    return task.status === "In Progress"
-  })
-  let completedLen = taskList.filter((task)=> {
-    return task.status === "completed"
-  })
+  // let todoLen = taskList.filter((task) => {
+  //   return task.status === "todo"
+  // })
+  const todoLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
+  const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
+  const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
+  // let inProgresLen = taskList.filter((task)=>{
+  //   return task.status === "In Progress"
+  // })
+  // let completedLen = taskList.filter((task)=> {
+  //   return task.status === "completed"
+  // })
   
 
   return (
@@ -93,10 +96,9 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
         <p className="text-[#000] font-semibold text-base">
           
           {componentStatus} ({
-          componentStatus === "todo" ? todoLen.length : 
-          componentStatus === "In progress" ? inProgresLen.length : 
-          componentStatus === "completed" ? completedLen.length : 
-          0
+          componentStatus === "todo" ? todoLen: 
+          componentStatus === "In Progress" ? inProgresLen: 
+          completedLen
           })
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
