@@ -6,13 +6,14 @@ import googleIcon from "../assets/google.svg";
 import taskListView from "../assets/Task-list-view3.png"
 import { Navigate, useNavigate } from "react-router-dom";
 import {doSignInWithGoogle, doSignOut} from "../firebase/auth.js"; 
-import {useAuth} from "../contexts/authContext.jsx";
+// import {useAuth} from "../contexts/authContext.jsx";
+import {useAuth} from  "../contexts/authContext.jsx"
 
 function Login() {
   const {userLoggedIn} = useAuth()
   const [isSigningIn, setIsSigningIn] = useState(false)
   const navigate = useNavigate();
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if(!isSigningIn){
       setIsSigningIn(true)
       doSignInWithGoogle().cache
