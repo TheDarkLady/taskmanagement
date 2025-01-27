@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { ModeToggle } from "../components/mode-toggle";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import { Button } from "../components/ui/button";
 import googleIcon from "../assets/google.svg";
 import taskListView from "../assets/Task-list-view3.png"
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import {doSignInWithGoogle, doSignOut} from "../firebase/auth.js"; 
+import {useAuth} from "../contexts/authContext.jsx";
 
 function Login() {
+  const {userLoggedIn} = useAuth()
+  const [isSigningIn, setIsSigningIn] = useState(false)
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate("/dashboard");
+    if(!isSigningIn){
+      setIsSigningIn(true)
+      doSignInWithGoogle().cache
+      navigate("/dashboard");
+    }
   };
   return (
-    <div className="w-screen h-full bg-color-[#FFF9F9] ">
+   <>
+   {userLoggedIn && (<Navigate to={"/dashboard"} replace={true}/>)}
+   <div className="w-screen h-full bg-color-[#FFF9F9] ">
       <div className="flex flex-row justify-end px-10 py-5">
         <ModeToggle />
       </div>
@@ -60,6 +70,7 @@ function Login() {
         </div>
       </div>
     </div>
+   </>
   );
 }
 

@@ -70,18 +70,9 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setStatus("");
     setCategory("");
   };
-  // let todoLen = taskList.filter((task) => {
-  //   return task.status === "todo"
-  // })
   const todoLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
   const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
   const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
-  // let inProgresLen = taskList.filter((task)=>{
-  //   return task.status === "In Progress"
-  // })
-  // let completedLen = taskList.filter((task)=> {
-  //   return task.status === "completed"
-  // })
   
 
   return (
