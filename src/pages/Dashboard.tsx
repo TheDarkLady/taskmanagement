@@ -43,7 +43,7 @@ function Dashboard() {
           </div>
         </div>
         <div>
-          <Button className="logout-btn bg-[#fff] text-[#000] px-5 py-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
+          <Button className="logout-btn bg-[#fff] text-[#000] px-5 py-1 dark:bg-[#7b1984] dark:text-[#7c7474] flex items-center">
             <RiLogoutBoxLine className="w-6 h-6 mr-2" />
             Logout
           </Button>
@@ -111,7 +111,6 @@ function Dashboard() {
           statusOfTasks.map((status, index) => {
             return (
               <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList} />
-
             )
           }
         )}
