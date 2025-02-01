@@ -5,24 +5,20 @@ import { Button } from "../components/ui/button";
 import googleIcon from "../assets/google.svg";
 import taskListView from "../assets/Task-list-view3.png"
 import { Navigate, useNavigate } from "react-router-dom";
-import {doSignInWithGoogle, doSignOut} from "../firebase/auth.js"; 
+// import {doSignInWithGoogle, doSignOut} from "../firebase/auth.js"; 
 // import {useAuth} from "../contexts/authContext.jsx";
-import {useAuth} from  "../contexts/authContext.jsx"
+// import {useAuth} from  "../contexts/authContext.jsx"
 
 function Login() {
-  const {userLoggedIn} = useAuth()
-  const [isSigningIn, setIsSigningIn] = useState(false)
+  // const {userLoggedIn} = useAuth()
+  // const [isSigningIn, setIsSigningIn] = useState(false)
   const navigate = useNavigate();
-  const handleLogin = async () => {
-    if(!isSigningIn){
-      setIsSigningIn(true)
-      doSignInWithGoogle().cache
-      navigate("/dashboard");
-    }
+  const handleLogin =  () => {
+    navigate('/dashboard')
   };
   return (
    <>
-   {userLoggedIn && (<Navigate to={"/dashboard"} replace={true}/>)}
+   {/* {userLoggedIn && (<Navigate to={"/dashboard"} replace={true}/>)} */}
    <div className="w-screen h-full bg-color-[#FFF9F9] ">
       <div className="flex flex-row justify-end px-10 py-5">
         <ModeToggle />
@@ -51,6 +47,8 @@ function Login() {
         </div>
       </div>
       <div className="flex flex-col h-[90vh] justify-center items-center login-page-mobile-container">
+
+        {/* Mobile Version */}
       <div className="w-full flex flex-col justify-center items-center p-10 gap-5">
           <div>
             <div className="flex items-start justify-start gap-2 w-full">
