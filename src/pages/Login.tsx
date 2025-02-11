@@ -5,16 +5,29 @@ import { Button } from "../components/ui/button";
 import googleIcon from "../assets/google.svg";
 import taskListView from "../assets/Task-list-view3.png"
 import { Navigate, useNavigate } from "react-router-dom";
-// import {doSignInWithGoogle, doSignOut} from "../firebase/auth.js"; 
-// import {useAuth} from "../contexts/authContext.jsx";
-// import {useAuth} from  "../contexts/authContext.jsx"
+import { auth , db} from '../firebase/firebase.js';
+import {setDoc, doc} from 'firebase/firestore';
+import {GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 
 function Login() {
   // const {userLoggedIn} = useAuth()
   // const [isSigningIn, setIsSigningIn] = useState(false)
   const navigate = useNavigate();
   const handleLogin =  () => {
-    navigate('/dashboard')
+    
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).then(async(result) => {
+      console.log(result);
+      const user = result.user
+      if(result.user){
+        await setDoc(doc(db, "Users", user.uid),{
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL
+        })
+        navigate('/dashboard')
+      }
+    })
   };
   return (
    <>
