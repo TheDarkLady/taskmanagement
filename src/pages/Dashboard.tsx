@@ -12,10 +12,11 @@ import { Task } from "../types/Task";
 function Dashboard() {
 
     const [taskList, setTaskList] = useState<Task[]>([]);
-
+    
     useEffect(()=>{
     },[taskList])
 
+    
     const statusOfTasks = ["todo", "In Progress", "completed"];
 
   return (

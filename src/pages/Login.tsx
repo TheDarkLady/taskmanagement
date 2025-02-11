@@ -10,8 +10,6 @@ import {setDoc, doc} from 'firebase/firestore';
 import {GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 
 function Login() {
-  // const {userLoggedIn} = useAuth()
-  // const [isSigningIn, setIsSigningIn] = useState(false)
   const navigate = useNavigate();
   const handleLogin =  () => {
     
