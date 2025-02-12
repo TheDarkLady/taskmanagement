@@ -9,8 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
-import InProgress from "./InProgress";
-import Completed from "./Completed";
+import { log } from "node:console";
 
 interface Props {
   componentStatus: String;
@@ -71,8 +70,11 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setCategory("");
   };
   const todoLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
-  const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
-  const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
+  console.log("Todo Length :", todoLen)
+  const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "In Progress").length ?? 0, [taskList])
+  console.log("inprogress Length :", inProgresLen)
+  const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "completed").length ?? 0, [taskList])
+  console.log("completed Length :", completedLen)
   
 
   return (
