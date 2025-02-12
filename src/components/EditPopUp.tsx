@@ -182,7 +182,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
         {/* Delete Task */}
         <li
           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-          onClick={() => handleDeleteTask(task)}
+          onClick={() => handleDeleteTask(editedTask.id)}
         >
           Delete
         </li>
