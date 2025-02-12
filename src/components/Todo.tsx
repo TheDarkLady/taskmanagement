@@ -275,7 +275,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                 />
 
                 {showEditDelete === index && (
-                  <EditPopUp
+                  <EditPopUp key={index}
                     taskList={taskList}
                     setTaskList={setTaskList}
                     showEditDelete={showEditDelete}
