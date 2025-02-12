@@ -60,8 +60,12 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     openAddTask();
   };
 
-  const handleDeleteTask = (index: number) => {
-    const newTaskList = taskList.filter((task, i) => i !== index);
+  // const handleDeleteTask = (index: number) => {
+  //   const newTaskList = taskList.filter((task, i) => i !== index);
+  //   setTaskList(newTaskList);
+  // };
+  const handleDeleteTask = (id: string) => {
+    const newTaskList = taskList.filter((task) => task.id !== id);
     setTaskList(newTaskList);
   };
   const resetTaskInputs = () => {

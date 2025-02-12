@@ -55,7 +55,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
         <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <span onClick={() => setOpen(true)}>Edit</span>
+              <span onClick={() => setOpen(true)}>Edits</span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
