@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
-import { log } from "node:console";
+import {v4 as uuidv4} from "uuid";
 
 interface Props {
   componentStatus: String;
@@ -26,7 +26,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-
+  const [selectedTask, setSelectedTask] = useState<Task | null >(null)
   const openAddTask = () => {
     const addTask = document.querySelector(".addtask");
     if (addTask) {
@@ -41,6 +41,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     }
 
     const newTask: Task = {
+      id:uuidv4(),
       taskTitle,
       selectedDate,
       status: status || "todo",
@@ -69,12 +70,18 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setStatus("");
     setCategory("");
   };
+
+  const openEditPopup = (task: Task) => {
+    setSelectedTask(task);
+  };
+  
+  const closeEditPopup = () => {
+    setSelectedTask(null);
+  };
+
   const todoLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
-  console.log("Todo Length :", todoLen)
   const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "In Progress").length ?? 0, [taskList])
-  console.log("inprogress Length :", inProgresLen)
   const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "completed").length ?? 0, [taskList])
-  console.log("completed Length :", completedLen)
   
 
   return (
@@ -268,17 +275,14 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
 
               <div className="w-[10%] flex items-start justify-start relative">
                 <BiDotsHorizontalRounded
-                  onClick={() => {
-                    setShowEditDelete(showEditDelete === index ? null : index);
-                    console.log("showEditDelete", showEditDelete);
-                  }}
+                  onClick={() => openEditPopup(task)}
                 />
 
-                {showEditDelete === index && (
-                  <EditPopUp key={index}
-                    taskList={taskList}
+                {selectedTask && selectedTask  === task && (
+                  <EditPopUp
+                    task={selectedTask}
                     setTaskList={setTaskList}
-                    showEditDelete={showEditDelete}
+                    handleClose={closeEditPopup}
                     handleDeleteTask={handleDeleteTask}
                   />
                 )}

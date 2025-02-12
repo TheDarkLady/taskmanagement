@@ -11,12 +11,12 @@ export default function Navbar() {
   const [userDetails, setUserDetails] = useState(null);
       const fetchUserData = async () => {
         auth.onAuthStateChanged(async (user) =>{
-          console.log("User :", user);
+          // console.log("User :", user);
           const docRef = doc(db, "Users", user.uid);
           const docSnap = await getDoc(docRef);
           if(docSnap.exists()){
             setUserDetails(docSnap.data())
-            console.log("docSanp Data :", docSnap.data())
+            // console.log("docSanp Data :", docSnap.data())
           }
           else{
             console.log("User is not logged in ")
@@ -50,9 +50,9 @@ export default function Navbar() {
         <ModeToggle />
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>L</AvatarFallback>
         </Avatar>
-        <h2>No Users</h2>
+        <h2>Loading ...</h2>
       </div>
       )
 

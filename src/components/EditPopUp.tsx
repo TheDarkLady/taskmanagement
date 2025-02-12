@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -18,30 +17,35 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@mui/material";
 import DatePicker from "react-datepicker";
-import {Task} from "../types/Task";
+import { Task } from "../types/Task";
 
 interface EditPopUpProps {
-  taskList: Task[];
+  task: Task;
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
-  showEditDelete: number | null;
-  handleDeleteTask: (index: number) => void;
+  handleClose: () => void;
+  handleDeleteTask: (task: Task) => void;
 }
 
 const EditPopUp: React.FC<EditPopUpProps> = ({
-  taskList,
+  task,
   setTaskList,
-  showEditDelete,
+  handleClose,
   handleDeleteTask,
 }) => {
-  const handleTaskUpdate = (key: keyof Task, value: any) => {
-    if (showEditDelete !== null) {
-      const updatedTaskList = [...taskList];
-      updatedTaskList[showEditDelete] = {
-        ...updatedTaskList[showEditDelete],
-        [key]: value,
-      };
-      setTaskList(updatedTaskList);
-    }
+  const [open, setOpen] = useState(false);
+  const [editedTask, setEditedTask] = useState<Task>(task);
+  console.log("EditTask", editedTask)
+  // Handle local state updates
+  const handleChange = (key: keyof Task, value: any) => {
+    setEditedTask((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Save changes and update task list
+  const handleSave = () => {
+    setTaskList((prevTasks) =>
+      prevTasks.map((t) => (t.id === task.id ? editedTask : t))
+    );
+    setOpen(false);
   };
 
   return (
@@ -49,84 +53,81 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
       <ul className="flex flex-col">
         {/* Edit Task */}
         <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-          <Dialog>
-            <DialogTrigger>
-              <span>Edit</span>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <span onClick={() => setOpen(true)}>Edit</span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="font-mulish font-semibold text-2xl text-[#2f2f2f]">
-                  Edit Task
-                </DialogTitle>
+                <DialogTitle>Edit Task</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-1 items-center gap-4">
-                  <Label htmlFor="taskTitle" className="text-left">
-                    Task Title
-                  </Label>
+                <div className="grid grid-cols-1 gap-4">
+                  <Label htmlFor="taskTitle">Task Title</Label>
                   <Input
                     id="taskTitle"
-                    value={taskList[showEditDelete!]?.taskTitle || ""}
-                    onChange={(e) =>
-                      handleTaskUpdate("taskTitle", e.target.value)
-                    }
-                    className="col-span-3"
+                    value={editedTask.taskTitle}
+                    onChange={(e) => handleChange("taskTitle", e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-1 items-center gap-4">
-                  <Label htmlFor="description" className="text-left">
-                    Description
-                  </Label>
+
+                <div className="grid grid-cols-1 gap-4">
+                  <Label htmlFor="description">Description</Label>
                   <textarea
                     id="description"
-                    className="col-span-3 border rounded p-2"
+                    className="border rounded p-2"
                     placeholder="Add a description"
+                    value={editedTask.description}
+                    onChange={(e) => handleChange("description", e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-3 items-center gap-4">
+
+                <div className="grid grid-cols-3 gap-4">
                   {/* Task Category */}
-                  <div className="flex flex-col justify-start items-left">
+                  <div className="flex flex-col">
                     <p>Task Category</p>
-                    <div className="flex flex-row gap-2">
+                    <div className="flex gap-2">
                       <Button
-                        onClick={() => handleTaskUpdate("category", "work")}
+                        onClick={() => handleChange("category", "work")}
                         className={`${
-                          taskList[showEditDelete!]?.category === "work"
+                          editedTask.category === "work"
                             ? "bg-blue-500 text-white"
                             : "bg-transparent text-gray-500"
-                        } px-2 py-2 rounded-2xl border border-gray-300`}
+                        } px-2 py-2 rounded-2xl border`}
                       >
                         Work
                       </Button>
                       <Button
-                        onClick={() => handleTaskUpdate("category", "personal")}
+                        onClick={() => handleChange("category", "personal")}
                         className={`${
-                          taskList[showEditDelete!]?.category === "personal"
+                          editedTask.category === "personal"
                             ? "bg-blue-500 text-white"
                             : "bg-transparent text-gray-500"
-                        } px-2 py-2 rounded-2xl border border-gray-300`}
+                        } px-2 py-2 rounded-2xl border`}
                       >
                         Personal
                       </Button>
                     </div>
                   </div>
+
                   {/* Due Date */}
-                  <div className="flex flex-col justify-start items-left">
+                  <div className="flex flex-col">
                     <p>Due On</p>
                     <DatePicker
-                      selected={taskList[showEditDelete!]?.selectedDate || null}
-                      onChange={(date) => handleTaskUpdate("selectedDate", date)}
+                      selected={editedTask.selectedDate || null}
+                      onChange={(date) => handleChange("selectedDate", date)}
                       dateFormat="dd/MM/yyyy"
                       placeholderText="Select a date"
                       className="py-2 px-4 border border-gray-300 rounded-md w-full"
                     />
                   </div>
+
                   {/* Status */}
-                  <div className="flex flex-col justify-start items-left">
+                  <div className="flex flex-col">
                     <p>Status</p>
                     <Select
-                      value={taskList[showEditDelete!]?.status || "todo"}
-                      onValueChange={(value) => handleTaskUpdate("status", value)}
+                      value={editedTask.status}
+                      onValueChange={(value) => handleChange("status", value)}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select Status" />
@@ -139,38 +140,35 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                     </Select>
                   </div>
                 </div>
+
                 {/* File Attachment */}
-                <div className="grid grid-cols-1 items-center gap-4">
-                  <Label htmlFor="taskFile" className="text-left">
-                    Attachment
-                  </Label>
+                <div className="grid grid-cols-1 gap-4">
+                  <Label htmlFor="taskFile">Attachment</Label>
                   <input
                     id="taskFile"
                     type="file"
                     onChange={(e) =>
-                      handleTaskUpdate(
-                        "attachment",
-                        e.target.files?.[0] || null
-                      )
+                      handleChange("attachment", e.target.files?.[0] || null)
                     }
-                    className="col-span-3 border border-gray-300 rounded-md p-2"
+                    className="border border-gray-300 rounded-md p-2"
                   />
-                  {taskList[showEditDelete!]?.attachment && (
+                  {editedTask.attachment && (
                     <p className="text-sm text-gray-500">
-                      Attached: {taskList[showEditDelete!]?.attachment.name}
+                      Attached: {editedTask.attachment.name}
                     </p>
                   )}
                 </div>
+
                 {/* Actions */}
                 <div className="bg-[#f1f1f1] w-full flex justify-end gap-4 p-2">
                   <Button
-                    onClick={() => {}}
+                    onClick={() => setOpen(false)}
                     className="bg-transparent text-gray-500 px-4 py-2 rounded-lg border"
                   >
                     Cancel
                   </Button>
                   <Button
-                    onClick={() => {}}
+                    onClick={handleSave}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
                     Save
@@ -184,9 +182,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
         {/* Delete Task */}
         <li
           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-          onClick={() => {
-            if (showEditDelete !== null) handleDeleteTask(showEditDelete);
-          }}
+          onClick={() => handleDeleteTask(task)}
         >
           Delete
         </li>
