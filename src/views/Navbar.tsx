@@ -39,8 +39,8 @@ export default function Navbar() {
         <div className="flex items-center justify-center gap-2">
         <ModeToggle />
         <Avatar>
-          <AvatarImage src={userDetails.photo} />
-          <AvatarFallback>CN</AvatarFallback>
+        <AvatarImage src={userDetails.photo} />
+        <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <h2>{userDetails.name}</h2>
       </div>

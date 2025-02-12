@@ -8,16 +8,36 @@ import { CiSearch } from "react-icons/ci";
 import { FaSort } from "react-icons/fa6";
 import Todo from "../components/Todo";
 import { Task } from "../types/Task";
+import {auth, db} from "../firebase/firebase.js"
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
     const [taskList, setTaskList] = useState<Task[]>([]);
-    
+    const navigate = useNavigate();
+    async function handleLogout() {
+      try {
+        await auth.signOut();
+        navigate("/")
+        
+        
+      } catch (error) {
+        console.log("Error Logging out : ", error.message);
+      }
+    }
     useEffect(()=>{
     },[taskList])
 
     
     const statusOfTasks = ["todo", "In Progress", "completed"];
+
+    const openAddTask = () => {
+      const addTask = document.querySelector(".addtask");
+      if (addTask) {
+        addTask.classList.toggle("hidden");
+      }
+    };
+
 
   return (
     <div className="mx-10">
@@ -44,7 +64,7 @@ function Dashboard() {
           </div>
         </div>
         <div>
-          <Button className="logout-btn bg-[#fff] text-[#000] px-5 py-1 dark:bg-[#7b1984] dark:text-[#7c7474] flex items-center">
+          <Button className="logout-btn bg-[#fff] text-[#000] px-5 py-1 dark:bg-[#7b1984] dark:text-[#7c7474] flex items-center" onClick={handleLogout}>
             <RiLogoutBoxLine className="w-6 h-6 mr-2" />
             Logout
           </Button>
@@ -86,7 +106,7 @@ function Dashboard() {
             />
             <CiSearch className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
           </div>
-          <Button className="add-task-btn bg-[#7b1984] text-[#fff] px-5 py-2 rounded-md flex items-center">
+          <Button className="add-task-btn bg-[#7b1984] text-[#fff] px-5 py-2 rounded-md flex items-center" onClick={openAddTask}>
             Add task
           </Button>
         </div>
