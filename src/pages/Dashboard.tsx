@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
-    const [taskList, setTaskList] = useState<Task[]>([]);
+  const [taskList, setTaskList] = useState<Task[]>(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
+  });
     const navigate = useNavigate();
     async function handleLogout() {
       try {

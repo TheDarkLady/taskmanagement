@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   componentStatus: String;
@@ -26,7 +26,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [selectedTask, setSelectedTask] = useState<Task | null >(null)
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const openAddTask = () => {
     const addTask = document.querySelector(".addtask");
     if (addTask) {
@@ -41,7 +41,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     }
 
     const newTask: Task = {
-      id:uuidv4(),
+      id: uuidv4(),
       taskTitle,
       selectedDate,
       status: status || "todo",
@@ -60,10 +60,6 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     openAddTask();
   };
 
-  // const handleDeleteTask = (index: number) => {
-  //   const newTaskList = taskList.filter((task, i) => i !== index);
-  //   setTaskList(newTaskList);
-  // };
   const handleDeleteTask = (id: string) => {
     const newTaskList = taskList.filter((task) => task.id !== id);
     setTaskList(newTaskList);
@@ -78,32 +74,58 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const openEditPopup = (task: Task) => {
     setSelectedTask(task);
   };
-  
+
   const closeEditPopup = () => {
     setSelectedTask(null);
   };
 
-  const todoLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "todo").length ?? 0, [taskList])
-  const inProgresLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "In Progress").length ?? 0, [taskList])
-  const completedLen = useMemo<number>(() => taskList.filter((task:Task) => task.status === "completed").length ?? 0, [taskList])
-  
+  const todoLen = useMemo<number>(
+    () => taskList.filter((task: Task) => task.status === "todo").length ?? 0,
+    [taskList]
+  );
+  const inProgresLen = useMemo<number>(
+    () =>
+      taskList.filter((task: Task) => task.status === "In Progress").length ??
+      0,
+    [taskList]
+  );
+  const completedLen = useMemo<number>(
+    () =>
+      taskList.filter((task: Task) => task.status === "completed").length ?? 0,
+    [taskList]
+  );
+
+  useEffect(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      setTaskList(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  // Save tasks to local storage whenever taskList changes
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+  }, [taskList]);
 
   return (
     <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
-      <div className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
-    componentStatus === "In Progress"
-      ? "bg-[#85D9F1]" 
-      : componentStatus === "completed"
-      ? "bg-[#CEFFCC]" 
-      : "bg-[#FAC3FF]" 
-  }`}>
+      <div
+        className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
+          componentStatus === "In Progress"
+            ? "bg-[#85D9F1]"
+            : componentStatus === "completed"
+            ? "bg-[#CEFFCC]"
+            : "bg-[#FAC3FF]"
+        }`}
+      >
         <p className="text-[#000] font-semibold text-base">
-          
-          {componentStatus} ({
-          componentStatus === "todo" ? todoLen: 
-          componentStatus === "In Progress" ? inProgresLen: 
-          completedLen
-          })
+          {componentStatus} (
+          {componentStatus === "todo"
+            ? todoLen
+            : componentStatus === "In Progress"
+            ? inProgresLen
+            : completedLen}
+          )
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
       </div>
@@ -250,51 +272,58 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
         </div>
       </div>
 
-      {taskList.filter((allTask)=>{
-        return allTask.status === componentStatus
-      }).map((task, index) => {
-        return (
-          <div key={index}>
-            <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
-              <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
-                <p>{task.taskTitle}</p>
-              </div>
-              <div className="w-[20%] flex flex-col items-start justify-start gap-[5px]">
-                <p>
-                  {task.selectedDate?.toDateString() ===
-                  new Date().toDateString()
-                    ? "Today"
-                    : ` ${task.selectedDate?.toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                      })}${" "}, ${task.selectedDate?.getFullYear()}`}
-                </p>
-              </div>
-              <div className="w-[20%] flex items-start justify-start relative">
-                <p>{task.status}</p>
-              </div>
-              <div className="w-[20%] flex items-start justify-start relative">
-                <p>{task.category}</p>
-              </div>
+      {taskList
+        .filter((allTask) => {
+          return allTask.status === componentStatus;
+        })
+        .map((task, index) => {
+          return (
+            <div key={index}>
+              <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
+                <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
+                  <p>{task.taskTitle}</p>
+                </div>
+                <div className="w-[20%] flex flex-col items-start justify-start gap-[5px]">
+                  <p>
+                    {task.selectedDate
+                      ? new Date(task.selectedDate).toDateString() ===
+                        new Date().toDateString()
+                        ? "Today"
+                        : `${new Date(task.selectedDate).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                            }
+                          )}, ${new Date(task.selectedDate).getFullYear()}`
+                      : "No Date"}
+                  </p>
+                </div>
+                <div className="w-[20%] flex items-start justify-start relative">
+                  <p>{task.status}</p>
+                </div>
+                <div className="w-[20%] flex items-start justify-start relative">
+                  <p>{task.category}</p>
+                </div>
 
-              <div className="w-[10%] flex items-start justify-start relative">
-                <BiDotsHorizontalRounded
-                  onClick={() => openEditPopup(task)}
-                />
-
-                {selectedTask && selectedTask  === task && (
-                  <EditPopUp
-                    task={selectedTask}
-                    setTaskList={setTaskList}
-                    handleClose={closeEditPopup}
-                    handleDeleteTask={handleDeleteTask}
+                <div className="w-[10%] flex items-start justify-start relative">
+                  <BiDotsHorizontalRounded
+                    onClick={() => openEditPopup(task)}
                   />
-                )}
+
+                  {selectedTask && selectedTask === task && (
+                    <EditPopUp
+                      task={selectedTask}
+                      setTaskList={setTaskList}
+                      handleClose={closeEditPopup}
+                      handleDeleteTask={handleDeleteTask}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 };
