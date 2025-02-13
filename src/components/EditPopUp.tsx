@@ -24,8 +24,8 @@ interface EditPopUpProps {
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   handleClose: () => void;
   handleDeleteTask: (task: Task) => void;
-  dropDownOpen :( dropDownOpen : Boolean) => false;
-  setDropDownOpen : React.Dispatch<React.SetStateAction<dropDownOpen>>
+  dropDownOpen :boolean;
+  setDropDownOpen : React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const EditPopUp: React.FC<EditPopUpProps> = ({
@@ -60,13 +60,16 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
        <ul className="flex flex-col">
          {/* Edit Task */}
          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-           <Dialog open={open} onOpenChange={setOpen}>
+           <Dialog open={open} onOpenChange={(isOpen) => {
+            setOpen(isOpen);
+            if(!isOpen) setDropDownOpen(false)
+           }}>
              <DialogTrigger asChild>
                <span
                  className="text-[#000] w-[100%] h-[100%] block"
                  onClick={() => {
                    setOpen(true);
-                   setDropDownOpen(true)
+                   
                  }}
                >
                  Edit
@@ -101,7 +104,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                    />
                  </div>
    
-                 <div className="grid grid-cols-3 gap-4">
+                 <div className="grid grid-cols-2 gap-4">
                    {/* Task Category */}
                    <div className="flex flex-col">
                      <p>Task Category</p>

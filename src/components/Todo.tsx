@@ -334,13 +334,13 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 
-                <div className="w-[10%] flex items-start justify-start relative" ref={dropdownRef}>
+                <div className="w-[10%] flex items-start justify-start relative">
                   <BiDotsHorizontalRounded
                     className="fill-[#000]"
                     onClick={(e) => {
                       openEditPopup(task);
-                      e.stopPropagation();
-                      // setDropDownOpen(true);
+                      // e.stopPropagation();
+                      setDropDownOpen(!dropDownOpen);
                     }}
                   />
 
@@ -348,7 +348,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                     <EditPopUp
                       task={selectedTask}
                       setTaskList={setTaskList}
-                      handleClose={closeEditPopup}
+                      handleClose={() => setDropDownOpen(false)}
                       handleDeleteTask={handleDeleteTask}
                       dropDownOpen={dropDownOpen}
                       setDropDownOpen={setDropDownOpen}
