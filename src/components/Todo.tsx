@@ -10,6 +10,7 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
 import { v4 as uuidv4 } from "uuid";
+import { useRef } from "react";
 
 interface Props {
   componentStatus: String;
@@ -21,12 +22,14 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showDatePick, setShowDatePick] = useState<boolean>(false);
-  const [showEditDelete, setShowEditDelete] = useState<number | null>(null);
+  // const [showEditDelete, setShowEditDelete] = useState<number | null>(null);
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [dropDownOpen, setDropDownOpen] = useState<Boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const openAddTask = () => {
     const addTask = document.querySelector(".addtask");
     if (addTask) {
@@ -73,10 +76,12 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
 
   const openEditPopup = (task: Task) => {
     setSelectedTask(task);
+    setDropDownOpen(true);
   };
 
   const closeEditPopup = () => {
     setSelectedTask(null);
+    setDropDownOpen(false);
   };
 
   const todoLen = useMemo<number>(
@@ -107,6 +112,25 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
   }, [taskList]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropDownOpen(false);
+      }
+    };
+
+    if (dropDownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropDownOpen]);
+
   return (
     <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
       <div
@@ -135,7 +159,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
           onClick={openAddTask}
         >
           <GoPlus className="fill-[#7B1984]" />
-          <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase">
+          <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase ">
             Add Task
           </p>
         </div>
@@ -146,7 +170,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
             <input
               type="text"
               placeholder="Task Title"
-              className="py-3 px-2 bg-transparent border-none border rounded-lg"
+              className="py-3 px-2 bg-transparent border-none border rounded-lg text-[#000]"
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
@@ -193,16 +217,20 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
           </div>
           <div className="w-[20%] flex items-center justify-start relative">
             <Button
-              className="heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
+              className="status-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
               onClick={() => setShowStatus(!showStatus)}
             >
-              {status === "" ? <GoPlus className="fill-[#00000066]" /> : status}
+              {status === "" ? (
+                <GoPlus className="fill-[#00000066] status-plus-icon" />
+              ) : (
+                status
+              )}
             </Button>
             {showStatus && (
               <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
                 <ul className="flex flex-col">
                   <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
                     onClick={() => {
                       setStatus("todo");
                       setShowStatus(!showStatus);
@@ -211,7 +239,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                     Todo
                   </li>
                   <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
                     onClick={() => {
                       setStatus("In Progress");
                       setShowStatus(!showStatus);
@@ -220,7 +248,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                     In-progress
                   </li>
                   <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
                     onClick={() => {
                       setStatus("completed");
                       setShowStatus(!showStatus);
@@ -234,11 +262,11 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
           </div>
           <div className="w-[20%] flex items-center justify-start relative">
             <Button
-              className="heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
+              className="category-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
               onClick={() => setShowCategory(!showCategory)}
             >
               {category === "" ? (
-                <GoPlus className="fill-[#00000066]" />
+                <GoPlus className="fill-[#00000066] category-plus-icon" />
               ) : (
                 category
               )}
@@ -247,7 +275,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
               <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
                 <ul className="flex flex-col">
                   <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
                     onClick={() => {
                       setCategory("work");
                       setShowCategory(!showCategory);
@@ -256,7 +284,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                     Work
                   </li>
                   <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
                     onClick={() => {
                       setCategory("personal");
                       setShowCategory(!showCategory);
@@ -281,10 +309,10 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
             <div key={index}>
               <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
                 <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
-                  <p>{task.taskTitle}</p>
+                  <p className="text-[#000]">{task.taskTitle}</p>
                 </div>
                 <div className="w-[20%] flex flex-col items-start justify-start gap-[5px]">
-                  <p>
+                  <p className="text-[#000]">
                     {task.selectedDate
                       ? new Date(task.selectedDate).toDateString() ===
                         new Date().toDateString()
@@ -300,15 +328,20 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                   </p>
                 </div>
                 <div className="w-[20%] flex items-start justify-start relative">
-                  <p>{task.status}</p>
+                  <p className="text-[#000]">{task.status}</p>
                 </div>
                 <div className="w-[20%] flex items-start justify-start relative">
-                  <p>{task.category}</p>
+                  <p className="text-[#000]">{task.category}</p>
                 </div>
 
-                <div className="w-[10%] flex items-start justify-start relative">
+                <div className="w-[10%] flex items-start justify-start relative" ref={dropdownRef}>
                   <BiDotsHorizontalRounded
-                    onClick={() => openEditPopup(task)}
+                    className="fill-[#000]"
+                    onClick={(e) => {
+                      openEditPopup(task);
+                      e.stopPropagation();
+                      // setDropDownOpen(true);
+                    }}
                   />
 
                   {selectedTask && selectedTask === task && (
@@ -317,6 +350,8 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
                       setTaskList={setTaskList}
                       handleClose={closeEditPopup}
                       handleDeleteTask={handleDeleteTask}
+                      dropDownOpen={dropDownOpen}
+                      setDropDownOpen={setDropDownOpen}
                     />
                   )}
                 </div>

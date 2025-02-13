@@ -139,6 +139,10 @@
   color: #00000099;
 
 }
+
+.category-btn:hover .category-plus-icon, .status-btn:hover .status-plus-icon{
+  fill: #fff;
+}
 @media only screen and (max-width: 768px) {
   .login-page-desktop-container {
     display: none;
