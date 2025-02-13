@@ -95,7 +95,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                    <Label htmlFor="description">Description</Label>
                    <textarea
                      id="description"
-                     className="border rounded p-2"
+                     className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] rounded p-2"
                      placeholder="Add a description"
                      value={editedTask.description}
                      onChange={(e) =>
@@ -107,34 +107,34 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                  <div className="grid grid-cols-2 gap-4">
                    {/* Task Category */}
                    <div className="flex flex-col">
-                     <p>Task Category</p>
+                     <p className="mb-2">Task Category</p>
                      <div className="flex gap-2">
-                       <Button
+                       <button
                          onClick={() => handleChange("category", "work")}
                          className={`${
                            editedTask.category === "work"
-                             ? "bg-blue-500 text-white"
-                             : "bg-transparent text-gray-500"
+                             ? "bg-[#7B1984] text-white"
+                             : "bg-transparent border border-[#7B1984]  text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
                          } px-2 py-2 rounded-2xl border`}
                        >
                          Work
-                       </Button>
-                       <Button
+                       </button>
+                       <button
                          onClick={() => handleChange("category", "personal")}
                          className={`${
                            editedTask.category === "personal"
-                             ? "bg-blue-500 text-white"
-                             : "bg-transparent text-gray-500"
+                             ? "bg-[#7B1984] text-white"
+                             : "bg-transparent border border-[#7B1984]  text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
                          } px-2 py-2 rounded-2xl border`}
                        >
                          Personal
-                       </Button>
+                       </button>
                      </div>
                    </div>
    
                    {/* Due Date */}
                    <div className="flex flex-col">
-                     <p>Due On</p>
+                     <p >Due On</p>
                      <DatePicker
                        selected={editedTask.selectedDate || null}
                        onChange={(date) =>
@@ -142,13 +142,13 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                        }
                        dateFormat="dd/MM/yyyy"
                        placeholderText="Select a date"
-                       className="py-2 px-4 border border-gray-300 rounded-md w-full"
+                       className="py-2 px-4 border border-gray-300 rounded-md w-full bg-transparent hover:bg-[#0a0a0a]"
                      />
                    </div>
    
                    {/* Status */}
                    <div className="flex flex-col">
-                     <p>Status</p>
+                     <p className="mb-2">Status</p>
                      <Select
                        value={editedTask.status}
                        onValueChange={(value) =>
@@ -191,22 +191,22 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                  </div>
    
                  {/* Actions */}
-                 <div className="bg-[#f1f1f1] w-full flex justify-end gap-4 p-2">
-                   <Button
+                 <div className="bg-[#fff] dark:bg-[#0a0a0a] w-full flex justify-end gap-4 p-2">
+                   <button
                      onClick={() => {
                       setOpen(false);
                       setDropDownOpen(false)
                      }}
-                     className="bg-transparent text-gray-500 px-4 py-2 rounded-lg border"
+                     className="bg-transparent text-[#7B1984] px-4 py-2 rounded-lg border border-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
                    >
                      Cancel
-                   </Button>
-                   <Button
+                   </button>
+                   <button
                      onClick={handleSave}
-                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                     className="bg-[#7B1984] text-white px-4 py-2 rounded-lg "
                    >
                      Save
-                   </Button>
+                   </button>
                  </div>
                </div>
              </DialogContent>
