@@ -107,8 +107,8 @@
 
 .logout-btn {
   border: 1px solid rgba(123, 25, 132, 0.15);
-  background-color: #fff !important;
-  padding: 0px 10px;
+  /* background-color: #fff !important; */
+  /* padding: 0px 10px; */
   border-radius: 15px;
 }
 .filter-by {
@@ -140,7 +140,7 @@
 
 }
 
-.category-btn:hover .category-plus-icon, .status-btn:hover .status-plus-icon{
+.category-btn:hover .category-plus-icon, .status-btn:hover .status-plus-icon, .list-btn:hover .list-icon{
   fill: #fff;
 }
 @media only screen and (max-width: 768px) {

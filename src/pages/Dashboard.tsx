@@ -10,6 +10,8 @@ import Todo from "../components/Todo";
 import { Task } from "../types/Task";
 import {auth, db} from "../firebase/firebase.js"
 import { useNavigate } from "react-router-dom";
+import { BsList } from "react-icons/bs";
+import { BsGrid } from "react-icons/bs";
 
 function Dashboard() {
 
@@ -48,26 +50,18 @@ function Dashboard() {
       <div className="flex items-center justify-between py-4 px-5">
         <div>
           <div className="flex items-center gap-2">
-            <Button className="bg-[#fff] text-[#000] pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
-              <img
-                src={listIcon}
-                alt="List Icon"
-                className="w-6 h-6 mr-2 dark:filter dark:invert"
-              />
+            <Button className="list-btn bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
+              <BsList className="list-icon"/>
               List
             </Button>
-            <Button className="bg-[#fff] text-[#000] pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
-              <img
-                src={boardIcon}
-                alt="Board Icon"
-                className="w-6 h-6 mr-2 dark:filter dark:invert"
-              />
+            <Button className="bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
+            <BsGrid />
               Board
             </Button>
           </div>
         </div>
         <div>
-          <Button className="logout-btn bg-[#fff] text-[#000] px-5 py-1 dark:bg-[#7b1984] dark:text-[#7c7474] flex items-center" onClick={handleLogout}>
+          <Button className="logout-btn bg-transparent text-[#000] px-5 py-1 hover:bg-[#7b1984] hover:text-[#fff]  dark:bg-[#7b1984] dark:text-[#fff] flex items-center" onClick={handleLogout}>
             <RiLogoutBoxLine className="w-6 h-6 mr-2" />
             Logout
           </Button>
