@@ -30,6 +30,23 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [dropDownOpen, setDropDownOpen] = useState<Boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, taskId: string) => {
+    event.dataTransfer.setData("text/plain", taskId);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>, newStatus: string) => {
+    event.preventDefault();
+    const taskId = event.dataTransfer.getData("text/plain");
+    setTaskList((prevTasks) =>
+      prevTasks.map((task) => (task.id === taskId ? { ...task, status: newStatus } : task))
+    );
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
   const openAddTask = () => {
     const addTask = document.querySelector(".addtask");
     if (addTask) {
@@ -132,7 +149,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
   }, [dropDownOpen]);
 
   return (
-    <div className="w-full bg-[#f1f1f1] rounded-lg mb-10">
+    <div className="w-full bg-[#f1f1f1] rounded-lg mb-10" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event, componentStatus)}>
       <div
         className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
           componentStatus === "In Progress"
@@ -306,7 +323,7 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
         })
         .map((task, index) => {
           return (
-            <div key={index}>
+            <div key={task.id} draggable onDragStart={(event) => handleDragStart(event, task.id)}>
               <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
                 <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
                   <p className="text-[#000]">{task.taskTitle}</p>
