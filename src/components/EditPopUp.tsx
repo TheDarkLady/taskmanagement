@@ -163,7 +163,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                          <SelectItem value="In Progress">
                            In Progress
                          </SelectItem>
-                         <SelectItem value="Completed">Completed</SelectItem>
+                         <SelectItem value="completed">Completed</SelectItem>
                        </SelectContent>
                      </Select>
                    </div>
