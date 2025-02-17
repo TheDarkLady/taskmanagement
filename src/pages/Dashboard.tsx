@@ -12,6 +12,7 @@ import {auth, db} from "../firebase/firebase.js"
 import { useNavigate } from "react-router-dom";
 import { BsList } from "react-icons/bs";
 import { BsGrid } from "react-icons/bs";
+import { SlCalender } from "react-icons/sl";
 
 function Dashboard() {
 
@@ -86,17 +87,10 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          {/* <select
-            id="categories"
-            name="categories"
-            className="border border-gray-300 rounded-3xl px-4 py-2 dark:bg-[#333] dark:text-[#fff] dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#000] p-5"
-          >
-            <option value="all" defaultChecked>
-              Due Date
-            </option>
-            <option value="work">Work</option>
-            <option value="personal">Personal</option>
-          </select> */}
+          <Button className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border" onClick={() => setShowDatePick(!showDatePick)}>
+            <SlCalender /> Due Date
+                {/* {selectedDate === null ? "Add Date" : selectedDate?.toDateString()} */}
+          </Button>
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
