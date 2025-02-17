@@ -18,6 +18,7 @@ interface Props {
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   categoryFilter: string;
   dateFilter: Date | null;
+  isListView: boolean;
 }
 
 const Todo: React.FC<Props> = ({
@@ -26,6 +27,7 @@ const Todo: React.FC<Props> = ({
   setTaskList,
   categoryFilter,
   dateFilter,
+  isListView
 }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
@@ -344,10 +346,6 @@ const Todo: React.FC<Props> = ({
             return false;
           }
 
-          // if(dateFilter !== null && allTask.selectedDate !== dateFilter){
-          //   return false
-          // }
-
           if (
             dateFilter &&
             allTask.selectedDate &&
@@ -368,11 +366,11 @@ const Todo: React.FC<Props> = ({
               draggable
               onDragStart={(event) => handleDragStart(event, task.id)}
             >
-              <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
-                <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
-                  <p className="text-[#000]">{task.taskTitle}</p>
+              <div className={`${isListView?"flex flex-row justify-center items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"}  py-5 border-t-[2px] border-[#0000001A]`}>
+                <div className={`${isListView? "w-[30%]": "w-[50%]"} flex flex-col gap-5 items-center justify-start`}>
+                  <p className={`${isListView?"font-normal":"font-bold"} text-[#000]`}>{task.taskTitle}</p>
                 </div>
-                <div className="w-[20%] flex flex-col items-start justify-start gap-[5px]">
+                <div className={`${isListView? "w-[20%]" : "w-[50%]"} flex flex-col items-start justify-start gap-[5px]`}>
                   <p className="text-[#000]">
                     {task.selectedDate
                       ? new Date(task.selectedDate).toDateString() ===
@@ -388,10 +386,10 @@ const Todo: React.FC<Props> = ({
                       : "No Date"}
                   </p>
                 </div>
-                <div className="w-[20%] flex items-start justify-start relative">
+                <div className={`${isListView? "flex items-start justify-start relative" : "hidden"}`}>
                   <p className="text-[#000]">{task.status}</p>
                 </div>
-                <div className="w-[20%] flex items-start justify-start relative">
+                <div className={`${isListView ? "w-[20%] items-start justify-start" : "w-[50%] items-center justify-center"} flex relative`}>
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 

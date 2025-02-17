@@ -130,7 +130,7 @@ function Dashboard() {
         </div>
       </div>
       <div className="flex flex-col mt-10">
-        <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A] dark:border-[#f1ecec1a]">
+        <div className={`${isListView ? "flex" : "hidden"} flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A] dark:border-[#f1ecec1a]`}>
           <div className="w-[30%] flex items-center justify-start">
             <p  className="heading-bar-para dark:text-[#fff]">Task name</p>
           </div>
@@ -146,11 +146,11 @@ function Dashboard() {
           </div>
           <div className="w-[10%] flex items-center justify-start relative">E/D</div>
         </div>
-        <div className={isListView ? "flex flex-col" : "grid grid-cols-3 gap-2"}>
+        <div className={isListView ? "flex flex-col" : "grid grid-cols-1 lg:grid-cols-3 gap-2"}>
         {
           statusOfTasks.map((status, index) => {
             return (
-                <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter} dateFilter={dateFilter}/>
+                <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter} dateFilter={dateFilter} isListView={isListView}/>
               )
             }
           )}
