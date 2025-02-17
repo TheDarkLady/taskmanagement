@@ -16,13 +16,13 @@ interface Props {
   componentStatus: String;
   taskList: Task[];
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
+  categoryFilter: string;
 }
 
-const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
+const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categoryFilter }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showDatePick, setShowDatePick] = useState<boolean>(false);
-  // const [showEditDelete, setShowEditDelete] = useState<number | null>(null);
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -101,21 +101,6 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
     setDropDownOpen(false);
   };
 
-  const todoLen = useMemo<number>(
-    () => taskList.filter((task: Task) => task.status === "todo").length ?? 0,
-    [taskList]
-  );
-  const inProgresLen = useMemo<number>(
-    () =>
-      taskList.filter((task: Task) => task.status === "In Progress").length ??
-      0,
-    [taskList]
-  );
-  const completedLen = useMemo<number>(
-    () =>
-      taskList.filter((task: Task) => task.status === "completed").length ?? 0,
-    [taskList]
-  );
 
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
@@ -161,11 +146,11 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
       >
         <p className="text-[#000] font-semibold text-base">
           {componentStatus} (
-          {componentStatus === "todo"
-            ? todoLen
-            : componentStatus === "In Progress"
-            ? inProgresLen
-            : completedLen}
+          {
+            categoryFilter === 'all' ? 
+              taskList.filter((task)=> task.status === componentStatus).length
+            : taskList.filter((task)=> (task.status === componentStatus && categoryFilter === task.category)).length
+          }
           )
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
@@ -319,7 +304,12 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList }) => {
 
       {taskList
         .filter((allTask) => {
-          return allTask.status === componentStatus;
+          if(allTask.status !== componentStatus) return false;
+          
+          if(categoryFilter !== "all" && allTask.category !== categoryFilter){
+            return false
+          }
+          return true;
         })
         .map((task, index) => {
           return (

@@ -15,6 +15,7 @@ import { BsGrid } from "react-icons/bs";
 
 function Dashboard() {
 
+  const [categoryFilter, setCategoryFilter] = useState("all")
   const [taskList, setTaskList] = useState<Task[]>(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
@@ -75,6 +76,9 @@ function Dashboard() {
             id="categories"
             name="categories"
             className="border border-gray-300 rounded-3xl px-4 py-2 dark:bg-[#333] dark:text-[#fff] dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#000] p-5"
+            onChange={(e) => {
+              setCategoryFilter(e.target.value)
+            }}
           >
             <option value="all" defaultChecked>
               Categories
@@ -82,7 +86,7 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <select
+          {/* <select
             id="categories"
             name="categories"
             className="border border-gray-300 rounded-3xl px-4 py-2 dark:bg-[#333] dark:text-[#fff] dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#000] p-5"
@@ -92,7 +96,7 @@ function Dashboard() {
             </option>
             <option value="work">Work</option>
             <option value="personal">Personal</option>
-          </select>
+          </select> */}
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -128,7 +132,7 @@ function Dashboard() {
         {
           statusOfTasks.map((status, index) => {
             return (
-              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList} />
+              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter}/>
             )
           }
         )}
