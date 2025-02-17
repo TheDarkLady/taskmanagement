@@ -13,10 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { BsList } from "react-icons/bs";
 import { BsGrid } from "react-icons/bs";
 import { SlCalender } from "react-icons/sl";
+import DatePicker from "react-datepicker";
 
 function Dashboard() {
 
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [categoryFilter, setCategoryFilter] = useState<string>("all")
+  const [dateFilter, setDateFilter] = useState<Date | null>(null);
+  const [showDateFilterPick, setShowDateFilterPick] = useState<boolean>(false);
   const [taskList, setTaskList] = useState<Task[]>(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
@@ -87,10 +90,27 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <Button className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border" onClick={() => setShowDatePick(!showDatePick)}>
-            <SlCalender /> Due Date
-                {/* {selectedDate === null ? "Add Date" : selectedDate?.toDateString()} */}
+          <div className="flex flex-col justify-center items-center gap-2">
+          <Button 
+            className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border" 
+            onClick={() => {
+              setShowDateFilterPick(!showDateFilterPick)
+            }}>
+            <SlCalender />
+            {dateFilter === null ? "Due Date" : dateFilter?.toDateString()}
           </Button>
+          {showDateFilterPick && (
+            <DatePicker
+              selected={dateFilter}
+              onChange={(date: Date) => {
+              setDateFilter(date);
+              setShowDateFilterPick(!showDateFilterPick);
+              console.log("Date :", dateFilter)
+              }}
+              inline
+            />
+          )}
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -126,7 +146,7 @@ function Dashboard() {
         {
           statusOfTasks.map((status, index) => {
             return (
-              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter}/>
+              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter} dateFilter={dateFilter}/>
             )
           }
         )}

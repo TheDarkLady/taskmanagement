@@ -17,9 +17,16 @@ interface Props {
   taskList: Task[];
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   categoryFilter: string;
+  dateFilter: Date | null;
 }
 
-const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categoryFilter }) => {
+const Todo: React.FC<Props> = ({
+  componentStatus,
+  taskList,
+  setTaskList,
+  categoryFilter,
+  dateFilter,
+}) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showDatePick, setShowDatePick] = useState<boolean>(false);
@@ -31,15 +38,23 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categor
   const [dropDownOpen, setDropDownOpen] = useState<Boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, taskId: string) => {
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    taskId: string
+  ) => {
     event.dataTransfer.setData("text/plain", taskId);
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>, newStatus: string) => {
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    newStatus: string
+  ) => {
     event.preventDefault();
     const taskId = event.dataTransfer.getData("text/plain");
     setTaskList((prevTasks) =>
-      prevTasks.map((task) => (task.id === taskId ? { ...task, status: newStatus } : task))
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
     );
   };
 
@@ -101,7 +116,6 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categor
     setDropDownOpen(false);
   };
 
-
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
@@ -134,7 +148,11 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categor
   }, [dropDownOpen]);
 
   return (
-    <div className="w-full bg-[#f1f1f1] rounded-lg mb-10" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event, componentStatus)}>
+    <div
+      className="w-full bg-[#f1f1f1] rounded-lg mb-10"
+      onDragOver={handleDragOver}
+      onDrop={(event) => handleDrop(event, componentStatus)}
+    >
       <div
         className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
           componentStatus === "In Progress"
@@ -146,11 +164,13 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categor
       >
         <p className="text-[#000] font-semibold text-base">
           {componentStatus} (
-          {
-            categoryFilter === 'all' ? 
-              taskList.filter((task)=> task.status === componentStatus).length
-            : taskList.filter((task)=> (task.status === componentStatus && categoryFilter === task.category)).length
-          }
+          {categoryFilter === "all"
+            ? taskList.filter((task) => task.status === componentStatus).length
+            : taskList.filter(
+                (task) =>
+                  task.status === componentStatus &&
+                  categoryFilter === task.category
+              ).length}
           )
         </p>
         <FaAngleUp className="fill-[#3E0344]" />
@@ -304,16 +324,37 @@ const Todo: React.FC<Props> = ({ componentStatus, taskList, setTaskList, categor
 
       {taskList
         .filter((allTask) => {
-          if(allTask.status !== componentStatus) return false;
+          console.log("Date filter :",dateFilter);
+          console.log("Task selected Date :", allTask.selectedDate);
           
-          if(categoryFilter !== "all" && allTask.category !== categoryFilter){
-            return false
+          if (allTask.status !== componentStatus) return false;
+
+          if (categoryFilter !== "all" && allTask.category !== categoryFilter) {
+            return false;
           }
-          return true;
+
+          // if(dateFilter !== null && allTask.selectedDate !== dateFilter){
+          //   return false
+          // }
+
+          if (
+            dateFilter &&
+            allTask.selectedDate &&
+            dateFilter.getDate() === new Date(allTask.selectedDate).getDate() &&
+            dateFilter.getMonth() === new Date(allTask.selectedDate).getMonth() &&
+            dateFilter.getFullYear() === new Date(allTask.selectedDate).getFullYear()
+          ) {
+            return true;
+          }
+          return dateFilter === null;
         })
         .map((task, index) => {
           return (
-            <div key={task.id} draggable onDragStart={(event) => handleDragStart(event, task.id)}>
+            <div
+              key={task.id}
+              draggable
+              onDragStart={(event) => handleDragStart(event, task.id)}
+            >
               <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
                 <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
                   <p className="text-[#000]">{task.taskTitle}</p>
