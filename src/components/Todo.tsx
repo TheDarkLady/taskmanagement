@@ -164,12 +164,23 @@ const Todo: React.FC<Props> = ({
       >
         <p className="text-[#000] font-semibold text-base">
           {componentStatus} (
-          {categoryFilter === "all"
-            ? taskList.filter((task) => task.status === componentStatus).length
+          {dateFilter
+            ? taskList.filter(
+                (task) =>
+                  task.selectedDate &&
+                  new Date(task.selectedDate).getDate() ===
+                    dateFilter.getDate() &&
+                  new Date(task.selectedDate).getMonth() ===
+                    dateFilter.getMonth() &&
+                  new Date(task.selectedDate).getFullYear() ===
+                    dateFilter.getFullYear() &&
+                  task.status === componentStatus &&
+                  (categoryFilter === "all" || task.category === categoryFilter)
+              ).length
             : taskList.filter(
                 (task) =>
                   task.status === componentStatus &&
-                  categoryFilter === task.category
+                  (categoryFilter === "all" || task.category === categoryFilter)
               ).length}
           )
         </p>
@@ -324,9 +335,9 @@ const Todo: React.FC<Props> = ({
 
       {taskList
         .filter((allTask) => {
-          console.log("Date filter :",dateFilter);
+          console.log("Date filter :", dateFilter);
           console.log("Task selected Date :", allTask.selectedDate);
-          
+
           if (allTask.status !== componentStatus) return false;
 
           if (categoryFilter !== "all" && allTask.category !== categoryFilter) {
@@ -341,8 +352,10 @@ const Todo: React.FC<Props> = ({
             dateFilter &&
             allTask.selectedDate &&
             dateFilter.getDate() === new Date(allTask.selectedDate).getDate() &&
-            dateFilter.getMonth() === new Date(allTask.selectedDate).getMonth() &&
-            dateFilter.getFullYear() === new Date(allTask.selectedDate).getFullYear()
+            dateFilter.getMonth() ===
+              new Date(allTask.selectedDate).getMonth() &&
+            dateFilter.getFullYear() ===
+              new Date(allTask.selectedDate).getFullYear()
           ) {
             return true;
           }
