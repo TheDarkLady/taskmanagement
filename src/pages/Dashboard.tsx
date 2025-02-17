@@ -20,6 +20,7 @@ function Dashboard() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all")
   const [dateFilter, setDateFilter] = useState<Date | null>(null);
   const [showDateFilterPick, setShowDateFilterPick] = useState<boolean>(false);
+  const [isListView, setIsListView] = useState<boolean>(true)
   const [taskList, setTaskList] = useState<Task[]>(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
@@ -48,18 +49,20 @@ function Dashboard() {
       }
     };
 
-
+    function handleView(){
+      setIsListView(!isListView)
+    }
   return (
     <div className="mx-10">
       <Navbar />
       <div className="flex items-center justify-between py-4 px-5">
         <div>
           <div className="flex items-center gap-2">
-            <Button className="list-btn bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
+            <Button className="list-btn bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center" onClick={handleView}>
               <BsList className="list-icon"/>
               List
             </Button>
-            <Button className="bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center">
+            <Button className="bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center" onClick={handleView}>
             <BsGrid />
               Board
             </Button>
@@ -143,13 +146,15 @@ function Dashboard() {
           </div>
           <div className="w-[10%] flex items-center justify-start relative">E/D</div>
         </div>
+        <div className={isListView ? "flex flex-col" : "grid grid-cols-3 gap-2"}>
         {
           statusOfTasks.map((status, index) => {
             return (
-              <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter} dateFilter={dateFilter}/>
-            )
-          }
-        )}
+                <Todo key={index} componentStatus={status}  taskList={taskList} setTaskList={setTaskList}  categoryFilter={categoryFilter} dateFilter={dateFilter}/>
+              )
+            }
+          )}
+        </div>
         
       </div>
     </div>
