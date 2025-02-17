@@ -200,7 +200,7 @@ const Todo: React.FC<Props> = ({
         </div>
       )}
       <div className=" flex-col hidden addtask">
-        <div className="flex flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A]">
+        <div className={`${isListView ? "flex-row" : "flex-col gap-5"} flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A]`}>
           <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
             <input
               type="text"
@@ -209,7 +209,7 @@ const Todo: React.FC<Props> = ({
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
-            <div className="flex flex-row justify-center items-center gap-5">
+            <div className={`${isListView ? "flex" : "hidden"} flex-row justify-center items-center gap-5`}>
               <Button
                 className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
                 onClick={handleAddTask}
@@ -330,7 +330,27 @@ const Todo: React.FC<Props> = ({
                 </ul>
               </div>
             )}
+            
           </div>
+          <div className={`${isListView ? "hidder" : "flex"} flex-row justify-center items-center gap-5`}>
+              <Button
+                className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
+                onClick={handleAddTask}
+              >
+                Add
+                <PiArrowBendDownLeftFill />
+              </Button>
+              <Button
+                className="bg-[#fff] text-[#000] px-10 py-2 rounded-md flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
+                onClick={() => {
+                  console.log(taskList);
+                  // resetTaskInputs();
+                  openAddTask();
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
           <div className="w-[10%] flex items-center justify-start relative"></div>
         </div>
       </div>
