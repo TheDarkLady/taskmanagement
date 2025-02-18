@@ -56,7 +56,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
   return (
    <div className="relative">
     {dropDownOpen && (
-       <div className="absolute top-4 left-0 w-[150px] bg-white border rounded shadow-md z-10">
+       <div className="absolute top-4 -right-0 md:left-0 w-[150px] bg-white border rounded shadow-md z-10">
        <ul className="flex flex-col">
          {/* Edit Task */}
          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">

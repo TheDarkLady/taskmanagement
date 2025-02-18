@@ -42,7 +42,7 @@ export default function Navbar() {
         <AvatarImage src={userDetails.photo} />
         <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <h2>{userDetails.name}</h2>
+        <h2 className="hidden md:block ">{userDetails.name}</h2>
       </div>
 
       ):(

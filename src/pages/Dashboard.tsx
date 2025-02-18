@@ -53,9 +53,9 @@ function Dashboard() {
       setIsListView(!isListView)
     }
   return (
-    <div className="mx-10">
+    <div className="mx-5 md:mx-10">
       <Navbar />
-      <div className="flex items-center justify-between py-4 px-5">
+      <div className="hidden md:flex items-center justify-between py-4 px-5">
         <div>
           <div className="flex items-center gap-2">
             <Button className="list-btn bg-[#fff] text-[#000] hover:bg-[#7b1984] hover:text-[#fff]  pb-1 dark:bg-[#7b1984] dark:text-[#fff] flex items-center" onClick={handleView}>
@@ -75,7 +75,7 @@ function Dashboard() {
           </Button>
         </div>
       </div>
-      <div className="flex items-center justify-between py-4 px-5">
+      <div className="flex flex-col-reverse md:flex-row gap-3 items-center justify-between py-4 px-5">
         <div className="flex items-center gap-3">
           <p className="text-[#00000090] dark:text-[#fff]">Filter by:</p>
           {/* Add filter options here if needed */}
@@ -115,15 +115,15 @@ function Dashboard() {
           )}
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
+        <div className="w-[100%] md:w-auto flex justify-end md:justify-between items-end md:items-center gap-4">
+          {/* <div className="hidden md:block relative">
             <input
               type="text"
               placeholder="Search"
               className="search-input border border-gray-300 rounded-3xl px-4 py-2 pl-10 dark:bg-[#333] dark:text-[#fff] dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#7b1984]"
             />
             <CiSearch className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
-          </div>
+          </div> */}
           <Button className="add-task-btn bg-[#7b1984] text-[#fff] px-5 py-2 rounded-md flex items-center" onClick={openAddTask}>
             Add task
           </Button>
@@ -131,20 +131,20 @@ function Dashboard() {
       </div>
       <div className="flex flex-col mt-10">
         <div className={`${isListView ? "flex" : "hidden"} flex-row justify-center items-center py-5 border-t-[2px] border-[#0000001A] dark:border-[#f1ecec1a]`}>
-          <div className="w-[30%] flex items-center justify-start">
+          <div className="w-[100%] md:w-[30%] flex items-center justify-start">
             <p  className="heading-bar-para dark:text-[#fff]">Task name</p>
           </div>
-          <div className="w-[20%] flex items-center justify-start gap-[5px]">
+          <div className="w-[20%] hidden  md:flex items-center justify-start gap-[5px]">
             <p className="heading-bar-para pb-[1px] dark:text-[#fff]">Due on</p>
             <FaSort  className="fill-[#00000066] w-3 h-3  dark:filter dark:invert"/>
           </div>
-          <div className="w-[20%] flex items-center justify-start">
+          <div className="w-[20%] hidden md:flex items-center justify-start">
             <p className="heading-bar-para dark:text-[#fff]">Task Status</p>
           </div>
-          <div className="w-[20%] flex items-center justify-start">
+          <div className="w-[20%] hidden md:flex items-center justify-start">
             <p className="heading-bar-para dark:text-[#fff]">Task Category</p>
           </div>
-          <div className="w-[10%] flex items-center justify-start relative">E/D</div>
+          <div className="w-[10%] hidden md:flex items-center justify-start relative">E/D</div>
         </div>
         <div className={isListView ? "flex flex-col" : "grid grid-cols-1 lg:grid-cols-3 gap-2"}>
         {

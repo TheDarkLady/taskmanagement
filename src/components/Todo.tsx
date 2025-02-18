@@ -200,7 +200,7 @@ const Todo: React.FC<Props> = ({
         </div>
       )}
       <div className=" flex-col hidden addtask">
-        <div className={`${isListView ? "flex-row" : "flex-col gap-5"} flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A]`}>
+        <div className={`${isListView ? "flex-col md:flex-row" : "flex-col gap-5"} flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}>
           <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
             <input
               type="text"
@@ -209,7 +209,7 @@ const Todo: React.FC<Props> = ({
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
-            <div className={`${isListView ? "flex" : "hidden"} flex-row justify-center items-center gap-5`}>
+            <div className={`hidden md:${isListView ? "flex" : "hidden"}   flex-row justify-center items-center gap-5`}>
               <Button
                 className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
                 onClick={handleAddTask}
@@ -218,7 +218,7 @@ const Todo: React.FC<Props> = ({
                 <PiArrowBendDownLeftFill />
               </Button>
               <Button
-                className="bg-[#fff] text-[#000] px-10 py-2 rounded-md flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
+                className="bg-[#fff] text-[#000] px-10 py-2 rounded-[20px] flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
                 onClick={() => {
                   console.log(taskList);
                   // resetTaskInputs();
@@ -332,7 +332,7 @@ const Todo: React.FC<Props> = ({
             )}
             
           </div>
-          <div className={`${isListView ? "hidder" : "flex"} flex-row justify-center items-center gap-5`}>
+          <div className={`flex ${isListView ? "md:hidden" : "md:flex"} flex-row justify-center items-center gap-5 `}>
               <Button
                 className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
                 onClick={handleAddTask}
@@ -340,8 +340,8 @@ const Todo: React.FC<Props> = ({
                 Add
                 <PiArrowBendDownLeftFill />
               </Button>
-              <Button
-                className="bg-[#fff] text-[#000] px-10 py-2 rounded-md flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
+              <Button 
+                className="bg-[#fff] text-[#000] px-10 py-2  flex items-center hover:bg-[#7B1984] hover:text-[#fff] rounded-[20px]"
                 onClick={() => {
                   console.log(taskList);
                   // resetTaskInputs();
@@ -386,11 +386,11 @@ const Todo: React.FC<Props> = ({
               draggable
               onDragStart={(event) => handleDragStart(event, task.id)}
             >
-              <div className={`${isListView?"flex flex-row justify-center items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"}  py-5 border-t-[2px] border-[#0000001A]`}>
-                <div className={`${isListView? "w-[30%]": "w-[50%]"} flex flex-col gap-5 items-center justify-start`}>
+              <div className={`${isListView?"flex flex-row justify-between md:justify-center items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"} px-2  py-5 border-t-[2px] border-[#0000001A]`}>
+                <div className={`w-auto ${isListView? "md:w-[30%]": "md:w-[50%]"} flex flex-col gap-5 items-center justify-start`}>
                   <p className={`${isListView?"font-normal":"font-bold"} text-[#000]`}>{task.taskTitle}</p>
                 </div>
-                <div className={`${isListView? "w-[20%]" : "w-[50%]"} flex flex-col items-start justify-start gap-[5px]`}>
+                <div className={`${isListView? "w-[20%]" : "w-[50%]"} hidden md:flex flex-col items-start justify-start gap-[5px]`}>
                   <p className="text-[#000]">
                     {task.selectedDate
                       ? new Date(task.selectedDate).toDateString() ===
@@ -406,10 +406,10 @@ const Todo: React.FC<Props> = ({
                       : "No Date"}
                   </p>
                 </div>
-                <div className={`${isListView? "flex items-start justify-start relative" : "hidden"}`}>
+                <div className={`${isListView? "hidden md:flex items-start justify-start relative" : "hidden"} `}>
                   <p className="text-[#000]">{task.status}</p>
                 </div>
-                <div className={`${isListView ? "w-[20%] items-start justify-start" : "w-[50%] items-center justify-center"} flex relative`}>
+                <div className={`${isListView ? "w-[20%] items-start justify-start" : "w-[50%] items-center justify-center"} hidden md:flex relative`}>
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 
