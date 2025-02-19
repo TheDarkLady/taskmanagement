@@ -1,29 +1,27 @@
 import React, { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@mui/material";
+} from "../components/ui/select";
 import DatePicker from "react-datepicker";
 import { Task } from "../types/Task";
 
 interface EditPopUpProps {
   task: Task;
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
-  handleClose: () => void;
-  handleDeleteTask: (task: Task) => void;
+  handleDeleteTask: (id: string) => void;
   dropDownOpen :boolean;
   setDropDownOpen : React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -31,7 +29,6 @@ interface EditPopUpProps {
 const EditPopUp: React.FC<EditPopUpProps> = ({
   task,
   setTaskList,
-  handleClose,
   handleDeleteTask,
   dropDownOpen,
   setDropDownOpen
@@ -95,7 +92,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                    <Label htmlFor="description">Description</Label>
                    <textarea
                      id="description"
-                     className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] rounded p-2"
+                     className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] dark:text-[#fff] rounded p-2"
                      placeholder="Add a description"
                      value={editedTask.description}
                      onChange={(e) =>

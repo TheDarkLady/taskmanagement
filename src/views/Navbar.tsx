@@ -1,22 +1,20 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { ModeToggle } from '../components/mode-toggle';
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { auth , db} from '../firebase/firebase.js';
 import {doc , getDoc} from 'firebase/firestore';
-
 export default function Navbar() {
 
   const [userDetails, setUserDetails] = useState(null);
       const fetchUserData = async () => {
-        auth.onAuthStateChanged(async (user) =>{
-          // console.log("User :", user);
+        auth.onAuthStateChanged(async (user:object) =>{
+          console.log("User :", user);
           const docRef = doc(db, "Users", user.uid);
           const docSnap = await getDoc(docRef);
           if(docSnap.exists()){
             setUserDetails(docSnap.data())
-            // console.log("docSanp Data :", docSnap.data())
+            console.log("User Details :", docSnap.data())
           }
           else{
             console.log("User is not logged in ")

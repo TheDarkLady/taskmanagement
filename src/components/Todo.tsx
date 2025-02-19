@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { FaAngleUp } from "react-icons/fa6";
 import { GoPlus } from "react-icons/go";
@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
 
 interface Props {
-  componentStatus: String;
+  componentStatus: string;
   taskList: Task[];
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   categoryFilter: string;
@@ -37,7 +37,7 @@ const Todo: React.FC<Props> = ({
   const [status, setStatus] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [dropDownOpen, setDropDownOpen] = useState<Boolean>(false);
+  const [dropDownOpen, setDropDownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDragStart = (
@@ -113,10 +113,6 @@ const Todo: React.FC<Props> = ({
     setDropDownOpen(true);
   };
 
-  const closeEditPopup = () => {
-    setSelectedTask(null);
-    setDropDownOpen(false);
-  };
 
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
@@ -242,7 +238,7 @@ const Todo: React.FC<Props> = ({
             {showDatePick && (
               <DatePicker
                 selected={selectedDate}
-                onChange={(date: Date) => {
+                onChange={(date: Date ) => {
                   setSelectedDate(date);
                   setShowDatePick(!showDatePick);
                 }}
@@ -379,7 +375,7 @@ const Todo: React.FC<Props> = ({
           }
           return dateFilter === null;
         })
-        .map((task, index) => {
+        .map((task) => {
           return (
             <div
               key={task.id}
@@ -410,14 +406,14 @@ const Todo: React.FC<Props> = ({
                 <div className={`${isListView? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative" : "hidden"} `}>
                   <p className="text-[#000]">{task.status}</p>
                 </div>
-                <div className={`w-auto ${isListView ? "md:w-[20%] items-start justify-start" : "md:w-[50%] items-center justify-center"} hidden md:flex relative`}>
+                <div className={`w-auto ${isListView ? "md:w-[20%] items-start justify-start" : "md:w-[50%] items-center justify-start"} hidden md:flex relative`}>
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 
-                <div className="w-auto md:w-[10%] flex items-start justify-start relative">
+                <div className={`${isListView ? "items-start justify-start" : "items-center justify-center"} w-auto md:w-[10%] flex relative`}>
                   <BiDotsHorizontalRounded
                     className="fill-[#000]"
-                    onClick={(e) => {
+                    onClick={() => {
                       openEditPopup(task);
                       // e.stopPropagation();
                       setDropDownOpen(!dropDownOpen);
@@ -428,7 +424,6 @@ const Todo: React.FC<Props> = ({
                     <EditPopUp
                       task={selectedTask}
                       setTaskList={setTaskList}
-                      handleClose={() => setDropDownOpen(false)}
                       handleDeleteTask={handleDeleteTask}
                       dropDownOpen={dropDownOpen}
                       setDropDownOpen={setDropDownOpen}
