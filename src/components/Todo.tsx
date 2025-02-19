@@ -238,7 +238,7 @@ const Todo: React.FC<Props> = ({
             {showDatePick && (
               <DatePicker
                 selected={selectedDate}
-                onChange={(date: Date ) => {
+                onChange={(date: Date | null ) => {
                   setSelectedDate(date);
                   setShowDatePick(!showDatePick);
                 }}

@@ -180,11 +180,6 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                      }
                      className="border border-gray-300 rounded-md p-2"
                    />
-                   {editedTask.attachment && (
-                     <p className="text-sm text-gray-500">
-                       Attached: {editedTask.attachment.name}
-                     </p>
-                   )}
                  </div>
    
                  {/* Actions */}

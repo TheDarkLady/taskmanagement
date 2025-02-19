@@ -8,9 +8,8 @@ export interface Task {
     attachment?: File[];
 }
 
-export interface Task1 {
-    taskTitle: string;
-    selectedDate: Date | null;
-    status: string;
-    category: string;
+export interface User {
+    name: string;
+    email: string;
+    photo: string;
 }

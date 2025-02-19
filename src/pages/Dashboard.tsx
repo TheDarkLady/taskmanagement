@@ -5,7 +5,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { FaSort } from "react-icons/fa6";
 import Todo from "../components/Todo";
 import { Task } from "../types/Task";
-import {auth} from "../firebase/firebase.js"
+import {auth} from "../firebase/firebase.ts"
 import { useNavigate } from "react-router-dom";
 import { BsList } from "react-icons/bs";
 import { BsGrid } from "react-icons/bs";
@@ -30,7 +30,11 @@ function Dashboard() {
         
         
       } catch (error) {
-        console.log("Error Logging out : ", error.message);
+        if (error instanceof Error) {
+          console.log("Error Logging out: ", error.message);
+        } else {
+          console.log("An unknown error occurred");
+        }
       }
     }
     useEffect(()=>{
@@ -107,7 +111,7 @@ function Dashboard() {
           {showDateFilterPick && (
             <DatePicker
               selected={dateFilter}
-              onChange={(date: Date) => {
+              onChange={(date: Date | null) => {
               setDateFilter(date);
               setShowDateFilterPick(!showDateFilterPick);
               console.log("Date :", dateFilter)
