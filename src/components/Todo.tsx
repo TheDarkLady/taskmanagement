@@ -386,11 +386,12 @@ const Todo: React.FC<Props> = ({
               draggable
               onDragStart={(event) => handleDragStart(event, task.id)}
             >
-              <div className={`${isListView?"flex flex-row justify-between md:justify-center items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"} px-2  py-5 border-t-[2px] border-[#0000001A]`}>
-                <div className={`w-auto ${isListView? "md:w-[30%]": "md:w-[50%]"} flex flex-col gap-5 items-center justify-start`}>
-                  <p className={`${isListView?"font-normal":"font-bold"} text-[#000]`}>{task.taskTitle}</p>
+              <div className={`${isListView?"flex flex-row justify-between items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"} px-5  py-5 border-t-[2px] border-[#0000001A]`}>
+                <div className={`w-auto ${isListView? "md:w-[30%]": "md:w-[50%]"} flex flex-row gap-5 items-center justify-start`}>
+                  {/* <input type="checkbox"  className="m-0"/> */}
+                  <p className={`${isListView?"font-normal":"font-bold"} text-[#000] ${task.status === 'completed'? "line-through" : "none"}`}>{task.taskTitle}</p>
                 </div>
-                <div className={`${isListView? "w-[20%]" : "w-[50%]"} hidden md:flex flex-col items-start justify-start gap-[5px]`}>
+                <div className={`w-auto ${isListView? "md:w-[20%]" : "md:w-[50%]"} hidden md:flex flex-col items-start justify-start gap-[5px]`}>
                   <p className="text-[#000]">
                     {task.selectedDate
                       ? new Date(task.selectedDate).toDateString() ===
@@ -406,14 +407,14 @@ const Todo: React.FC<Props> = ({
                       : "No Date"}
                   </p>
                 </div>
-                <div className={`${isListView? "hidden md:flex items-start justify-start relative" : "hidden"} `}>
+                <div className={`${isListView? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative" : "hidden"} `}>
                   <p className="text-[#000]">{task.status}</p>
                 </div>
-                <div className={`${isListView ? "w-[20%] items-start justify-start" : "w-[50%] items-center justify-center"} hidden md:flex relative`}>
+                <div className={`w-auto ${isListView ? "md:w-[20%] items-start justify-start" : "md:w-[50%] items-center justify-center"} hidden md:flex relative`}>
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 
-                <div className="w-[10%] flex items-start justify-start relative">
+                <div className="w-auto md:w-[10%] flex items-start justify-start relative">
                   <BiDotsHorizontalRounded
                     className="fill-[#000]"
                     onClick={(e) => {

@@ -142,7 +142,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                        }
                        dateFormat="dd/MM/yyyy"
                        placeholderText="Select a date"
-                       className="py-2 px-4 border border-gray-300 rounded-md w-full bg-transparent hover:bg-[#0a0a0a]"
+                       className="py-2 px-4 border border-gray-300 rounded-md w-full bg-transparent hover:bg-[#7B1984] hover:text-[#fff]"
                      />
                    </div>
    

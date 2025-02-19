@@ -97,7 +97,12 @@ function Dashboard() {
           <Button 
             className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border" 
             onClick={() => {
-              setShowDateFilterPick(!showDateFilterPick)
+              if(dateFilter){
+                setDateFilter(null)
+              }
+              else{
+                setShowDateFilterPick(!showDateFilterPick)
+              }
             }}>
             <SlCalender />
             {dateFilter === null ? "Due Date" : dateFilter?.toDateString()}
