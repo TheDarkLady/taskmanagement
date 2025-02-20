@@ -14,6 +14,8 @@ import { useRef } from "react";
 
 interface Props {
   componentStatus: string;
+  filteredTasks: Task[];
+  setFilteredTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   taskList: Task[];
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   categoryFilter: string;
@@ -23,11 +25,13 @@ interface Props {
 
 const Todo: React.FC<Props> = ({
   componentStatus,
+  filteredTasks,
+  setFilteredTasks,
   taskList,
   setTaskList,
   categoryFilter,
   dateFilter,
-  isListView
+  isListView,
 }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
@@ -39,80 +43,6 @@ const Todo: React.FC<Props> = ({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [dropDownOpen, setDropDownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    taskId: string
-  ) => {
-    event.dataTransfer.setData("text/plain", taskId);
-  };
-
-  const handleDrop = (
-    event: React.DragEvent<HTMLDivElement>,
-    newStatus: string
-  ) => {
-    event.preventDefault();
-    const taskId = event.dataTransfer.getData("text/plain");
-    setTaskList((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
-  const openAddTask = () => {
-    const addTask = document.querySelector(".addtask");
-    if (addTask) {
-      addTask.classList.toggle("hidden");
-    }
-  };
-
-  const handleAddTask = () => {
-    if (!taskTitle.trim()) {
-      alert("Task Title cannot be empty");
-      return;
-    }
-
-    const newTask: Task = {
-      id: uuidv4(),
-      taskTitle,
-      selectedDate,
-      status: status || "todo",
-      category: category || "general",
-    };
-
-    setTaskList((prevTasks) => {
-      const updatedTasks = [...prevTasks, newTask];
-      return updatedTasks;
-    });
-
-    // Log the taskList after it has been updated
-    console.log([...taskList, newTask]); // Log the current taskList with the newly added task
-
-    resetTaskInputs();
-    openAddTask();
-  };
-
-  const handleDeleteTask = (id: string) => {
-    const newTaskList = taskList.filter((task) => task.id !== id);
-    setTaskList(newTaskList);
-  };
-  const resetTaskInputs = () => {
-    setTaskTitle("");
-    setSelectedDate(null);
-    setStatus("");
-    setCategory("");
-  };
-
-  const openEditPopup = (task: Task) => {
-    setSelectedTask(task);
-    setDropDownOpen(true);
-  };
-
 
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
@@ -144,6 +74,83 @@ const Todo: React.FC<Props> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropDownOpen]);
+
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    taskId: string
+  ) => {
+    event.dataTransfer.setData("text/plain", taskId);
+  };
+
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    newStatus: string
+  ) => {
+    event.preventDefault();
+    const taskId = event.dataTransfer.getData("text/plain");
+    setTaskList((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+    setFilteredTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const openAddTask = () => {
+    const addTask = document.querySelector(".addtask");
+    if (addTask) {
+      addTask.classList.toggle("hidden");
+    }
+  };
+
+  const handleAddTask = () => {
+    if (!taskTitle.trim()) {
+      alert("Task Title cannot be empty");
+      return;
+    }
+
+    const newTask: Task = {
+      id: uuidv4(),
+      taskTitle,
+      selectedDate,
+      status: status || "todo",
+      category: category || "general",
+    };
+
+    const updatedTasks = [...taskList, newTask];
+
+    setTaskList(updatedTasks);
+    setFilteredTasks(updatedTasks);
+
+    resetTaskInputs();
+    openAddTask();
+  };
+
+  const handleDeleteTask = (id: string) => {
+    const newTaskList = taskList.filter((task) => task.id !== id);
+    setTaskList(newTaskList);
+    setFilteredTasks(newTaskList);
+  };
+
+  const resetTaskInputs = () => {
+    setTaskTitle("");
+    setSelectedDate(null);
+    setStatus("");
+    setCategory("");
+  };
+
+  const openEditPopup = (task: Task) => {
+    setSelectedTask(task);
+    setDropDownOpen(true);
+  };
 
   return (
     <div
@@ -196,7 +203,11 @@ const Todo: React.FC<Props> = ({
         </div>
       )}
       <div className=" flex-col hidden addtask">
-        <div className={`${isListView ? "flex-col md:flex-row" : "flex-col gap-5"} flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}>
+        <div
+          className={`${
+            isListView ? "flex-col md:flex-row" : "flex-col gap-5"
+          } flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}
+        >
           <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
             <input
               type="text"
@@ -205,7 +216,11 @@ const Todo: React.FC<Props> = ({
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
-            <div className={`hidden md:${isListView ? "flex" : "hidden"}   flex-row justify-center items-center gap-5`}>
+            <div
+              className={`hidden md:${
+                isListView ? "flex" : "hidden"
+              }   flex-row justify-center items-center gap-5`}
+            >
               <Button
                 className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
                 onClick={handleAddTask}
@@ -216,7 +231,7 @@ const Todo: React.FC<Props> = ({
               <Button
                 className="bg-[#fff] text-[#000] px-10 py-2 rounded-[20px] flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
                 onClick={() => {
-                  console.log(taskList);
+                  // console.log(taskList);
                   // resetTaskInputs();
                   openAddTask();
                 }}
@@ -238,7 +253,7 @@ const Todo: React.FC<Props> = ({
             {showDatePick && (
               <DatePicker
                 selected={selectedDate}
-                onChange={(date: Date | null ) => {
+                onChange={(date: Date | null) => {
                   setSelectedDate(date);
                   setShowDatePick(!showDatePick);
                 }}
@@ -326,35 +341,38 @@ const Todo: React.FC<Props> = ({
                 </ul>
               </div>
             )}
-            
           </div>
-          <div className={`flex ${isListView ? "md:hidden" : "md:flex"} flex-row justify-center items-center gap-5 `}>
-              <Button
-                className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
-                onClick={handleAddTask}
-              >
-                Add
-                <PiArrowBendDownLeftFill />
-              </Button>
-              <Button 
-                className="bg-[#fff] text-[#000] px-10 py-2  flex items-center hover:bg-[#7B1984] hover:text-[#fff] rounded-[20px]"
-                onClick={() => {
-                  console.log(taskList);
-                  // resetTaskInputs();
-                  openAddTask();
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
+          <div
+            className={`flex ${
+              isListView ? "md:hidden" : "md:flex"
+            } flex-row justify-center items-center gap-5 `}
+          >
+            <Button
+              className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
+              onClick={handleAddTask}
+            >
+              Add
+              <PiArrowBendDownLeftFill />
+            </Button>
+            <Button
+              className="bg-[#fff] text-[#000] px-10 py-2  flex items-center hover:bg-[#7B1984] hover:text-[#fff] rounded-[20px]"
+              onClick={() => {
+                // console.log(taskList);
+                // resetTaskInputs();
+                openAddTask();
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
           <div className="w-[10%] flex items-center justify-start relative"></div>
         </div>
       </div>
 
-      {taskList
+      {filteredTasks
         .filter((allTask) => {
-          console.log("Date filter :", dateFilter);
-          console.log("Task selected Date :", allTask.selectedDate);
+          // console.log("Date filter :", dateFilter);
+          // console.log("Task selected Date :", allTask.selectedDate);
 
           if (allTask.status !== componentStatus) return false;
 
@@ -382,12 +400,34 @@ const Todo: React.FC<Props> = ({
               draggable
               onDragStart={(event) => handleDragStart(event, task.id)}
             >
-              <div className={`${isListView?"flex flex-row justify-between items-center" : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"} px-5  py-5 border-t-[2px] border-[#0000001A]`}>
-                <div className={`w-auto ${isListView? "md:w-[30%]": "md:w-[50%]"} flex flex-row gap-5 items-center justify-start`}>
+              <div
+                className={`${
+                  isListView
+                    ? "flex flex-row justify-between items-center"
+                    : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"
+                } px-5  py-5 border-t-[2px] border-[#0000001A]`}
+              >
+                <div
+                  className={`w-auto ${
+                    isListView ? "md:w-[30%]" : "md:w-[50%]"
+                  } flex flex-row gap-5 items-center justify-start`}
+                >
                   {/* <input type="checkbox"  className="m-0"/> */}
-                  <p className={`${isListView?"font-normal":"font-bold"} text-[#000] ${task.status === 'completed'? "line-through" : "none"}`}>{task.taskTitle}</p>
+                  <p
+                    className={`${
+                      isListView ? "font-normal" : "font-bold"
+                    } text-[#000] ${
+                      task.status === "completed" ? "line-through" : "none"
+                    }`}
+                  >
+                    {task.taskTitle}
+                  </p>
                 </div>
-                <div className={`w-auto ${isListView? "md:w-[20%]" : "md:w-[50%]"} hidden md:flex flex-col items-start justify-start gap-[5px]`}>
+                <div
+                  className={`w-auto ${
+                    isListView ? "md:w-[20%]" : "md:w-[50%]"
+                  } hidden md:flex flex-col items-start justify-start gap-[5px]`}
+                >
                   <p className="text-[#000]">
                     {task.selectedDate
                       ? new Date(task.selectedDate).toDateString() ===
@@ -403,14 +443,32 @@ const Todo: React.FC<Props> = ({
                       : "No Date"}
                   </p>
                 </div>
-                <div className={`${isListView? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative" : "hidden"} `}>
+                <div
+                  className={`${
+                    isListView
+                      ? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative"
+                      : "hidden"
+                  } `}
+                >
                   <p className="text-[#000]">{task.status}</p>
                 </div>
-                <div className={`w-auto ${isListView ? "md:w-[20%] items-start justify-start" : "md:w-[50%] items-center justify-start"} hidden md:flex relative`}>
+                <div
+                  className={`w-auto ${
+                    isListView
+                      ? "md:w-[20%] items-start justify-start"
+                      : "md:w-[50%] items-center justify-start"
+                  } hidden md:flex relative`}
+                >
                   <p className="text-[#000]">{task.category}</p>
                 </div>
 
-                <div className={`${isListView ? "items-start justify-start" : "items-center justify-center"} w-auto md:w-[10%] flex relative`}>
+                <div
+                  className={`${
+                    isListView
+                      ? "items-start justify-start"
+                      : "items-center justify-center"
+                  } w-auto md:w-[10%] flex relative`}
+                >
                   <BiDotsHorizontalRounded
                     className="fill-[#000]"
                     onClick={() => {
@@ -423,6 +481,7 @@ const Todo: React.FC<Props> = ({
                   {selectedTask && selectedTask === task && (
                     <EditPopUp
                       task={selectedTask}
+                      setFilteredTasks={setFilteredTasks}
                       setTaskList={setTaskList}
                       handleDeleteTask={handleDeleteTask}
                       dropDownOpen={dropDownOpen}

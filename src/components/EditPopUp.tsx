@@ -20,6 +20,7 @@ import { Task } from "../types/Task";
 
 interface EditPopUpProps {
   task: Task;
+  setFilteredTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
   handleDeleteTask: (id: string) => void;
   dropDownOpen :boolean;
@@ -28,6 +29,7 @@ interface EditPopUpProps {
 
 const EditPopUp: React.FC<EditPopUpProps> = ({
   task,
+  setFilteredTasks,
   setTaskList,
   handleDeleteTask,
   dropDownOpen,
@@ -44,6 +46,9 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
   // Save changes and update task list
   const handleSave = () => {
     setTaskList((prevTasks) =>
+      prevTasks.map((t) => (t.id === task.id ? editedTask : t))
+    );
+    setFilteredTasks((prevTasks) =>
       prevTasks.map((t) => (t.id === task.id ? editedTask : t))
     );
     setOpen(false);
