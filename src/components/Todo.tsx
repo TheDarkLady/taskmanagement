@@ -413,8 +413,8 @@ const Todo: React.FC<Props> = ({
               >
                 <div
                   className={`w-auto ${
-                    isListView ? "md:w-[30%]" : "md:w-[50%]"
-                  } flex flex-row gap-5 items-center justify-start`}
+                    isListView ? "md:w-[30%] items-center justify-start" : "md:w-[100%] items-center justify-center"
+                  } flex flex-row gap-5 `}
                 >
                   <input 
                   type="checkbox" 
@@ -434,8 +434,8 @@ const Todo: React.FC<Props> = ({
                 </div>
                 <div
                   className={`w-auto ${
-                    isListView ? "md:w-[20%]" : "md:w-[50%]"
-                  } hidden md:flex flex-col items-start justify-start gap-[5px]`}
+                    isListView ? "md:w-[20%] items-start justify-start" : "md:w-[100%] items-center justify-center"
+                  } hidden md:flex flex-col  gap-[5px]`}
                 >
                   <p className="text-[#000]">
                     {task.selectedDate
@@ -456,7 +456,7 @@ const Todo: React.FC<Props> = ({
                   className={`${
                     isListView
                       ? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative"
-                      : "hidden"
+                      : "hidden "
                   } `}
                 >
                   <p className="text-[#000]">{task.status}</p>
@@ -465,7 +465,7 @@ const Todo: React.FC<Props> = ({
                   className={`w-auto ${
                     isListView
                       ? "md:w-[20%] items-start justify-start"
-                      : "md:w-[50%] items-center justify-start"
+                      : "md:w-[100%] items-center justify-center"
                   } hidden md:flex relative`}
                 >
                   <p className="text-[#000]">{task.category}</p>
