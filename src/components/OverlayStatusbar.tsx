@@ -92,7 +92,7 @@ const OverlayStatusbar: React.FC<Props> = ({
       </div>
       <div className="flex flex-row justify-center flex-nowrap gap-2">
         <Select onValueChange={(value) => handleChange("status", value)}>
-          <SelectTrigger className="bg-[#1a1c20] text-[#fff] text-[12px] md:text-[16px] px-4 py-2 rounded-3xl gap-2">
+          <SelectTrigger className="bg-[#1a1c20] text-[#fff] text-[12px] md:text-[16px] px-4 py-2 rounded-3xl gap-2 border border-[#fff]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="bg-[#1a1c20] text-[#fff] text-[12px] md:text-[16px]">

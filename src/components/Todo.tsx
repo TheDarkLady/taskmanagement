@@ -157,7 +157,7 @@ const Todo: React.FC<Props> = ({
   };
 
   return (
-    <div
+    <div 
       className="w-full bg-[#f1f1f1] rounded-lg mb-10"
       onDragOver={handleDragOver}
       onDrop={(event) => handleDrop(event, componentStatus)}

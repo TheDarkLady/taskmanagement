@@ -254,8 +254,7 @@ function Dashboard() {
                   handleChecked={handleChecked}
                   checkedTasks={checkedTasks}
                 />
-                <div>
-                  {isChecked ? (
+                  {isChecked && (
                     <OverlayStatusbar
                       checkedTasks={checkedTasks}
                       setCheckedTasks={setCheckedTasks}
@@ -267,10 +266,8 @@ function Dashboard() {
                       setFilteredTasks={setFilteredTasks}
 
                     />
-                  ) : (
-                    ""
                   )}
-                </div>
+          
               </>
             );
           })}
