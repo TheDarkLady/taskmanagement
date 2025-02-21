@@ -12,8 +12,7 @@ import { BsGrid } from "react-icons/bs";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import { CiSearch } from "react-icons/ci";
-import OverlayStatusbar from "../components/overlayStatusbar.tsx";
-
+import OverlayStatusbar from "../components/OverlayStatusbar.tsx";
 function Dashboard() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<Date | null>(null);
