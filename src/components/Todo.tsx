@@ -21,6 +21,8 @@ interface Props {
   categoryFilter: string;
   dateFilter: Date | null;
   isListView: boolean;
+  checkedTasks: { [key: string]: boolean };
+  handleChecked: (e: React.ChangeEvent<HTMLInputElement>, taskId: string) => void;
 }
 
 const Todo: React.FC<Props> = ({
@@ -32,6 +34,8 @@ const Todo: React.FC<Props> = ({
   categoryFilter,
   dateFilter,
   isListView,
+  checkedTasks,
+  handleChecked,
 }) => {
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
@@ -193,7 +197,7 @@ const Todo: React.FC<Props> = ({
       </div>
       {componentStatus == "todo" && (
         <div
-          className="w-full py-6 px-10 flex flex-row justify-start items-center gap-2 cursor-pointer"
+          className="hidden md:flex w-full py-6 px-10  flex-row justify-start items-center gap-2 cursor-pointer"
           onClick={openAddTask}
         >
           <GoPlus className="fill-[#7B1984]" />
@@ -412,7 +416,12 @@ const Todo: React.FC<Props> = ({
                     isListView ? "md:w-[30%]" : "md:w-[50%]"
                   } flex flex-row gap-5 items-center justify-start`}
                 >
-                  {/* <input type="checkbox"  className="m-0"/> */}
+                  <input 
+                  type="checkbox" 
+                  checked={checkedTasks[task.id] || false}  
+                  className="m-0"
+                  onChange={(e) => handleChecked(e, task.id)}
+                  />
                   <p
                     className={`${
                       isListView ? "font-normal" : "font-bold"
@@ -490,6 +499,7 @@ const Todo: React.FC<Props> = ({
                   )}
                 </div>
               </div>
+        
             </div>
           );
         })}
