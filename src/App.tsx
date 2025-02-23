@@ -8,7 +8,7 @@ function App() {
     <>
     <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Login/>} />
+      <Route path='/taskmanagement' element={<Login/>} />
       <Route path='/dashboard' element={<Dashboard/>} />
     </Routes>
     </BrowserRouter>
