@@ -46,7 +46,7 @@ function Dashboard() {
   async function handleLogout() {
     try {
       await auth.signOut();
-      navigate("/");
+      navigate("/#");
     } catch (error) {
       if (error instanceof Error) {
         console.log("Error Logging out: ", error.message);

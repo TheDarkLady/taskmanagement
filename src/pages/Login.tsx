@@ -22,7 +22,7 @@ function Login() {
           email: user.email,
           photo: user.photoURL
         })
-        navigate('/dashboard')
+        navigate('/#/dashboard')
       }
     })
   };
