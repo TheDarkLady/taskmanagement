@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path='/taskmanagement' element={<Login/>} />
-      <Route path='/dashboard' element={<Dashboard/>} />
+      <Route path='/taskmanagement/dashboard' element={<Dashboard/>} />
     </Routes>
     </BrowserRouter>
     </>
