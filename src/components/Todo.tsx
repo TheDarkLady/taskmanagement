@@ -11,7 +11,7 @@ import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
 import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 interface Props {
   componentStatus: string;
@@ -52,10 +52,20 @@ const Todo: React.FC<Props> = ({
   const [dropDownOpen, setDropDownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
-  const statusRef = useRef<HTMLDivElement>(null)
-  const categoryRef = useRef<HTMLDivElement>(null)
+  const statusRef = useRef<HTMLDivElement>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+  toast[type](message, {
+    position: "top-right",
+    autoClose: 3000,       // Close after 3 seconds
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
 
-  
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
@@ -108,29 +118,36 @@ const Todo: React.FC<Props> = ({
     };
   }, [showDatePick]);
 
-
   // removing status dropdown on clicking outside
 
-  useEffect(()=> {
-    const handleClickOutsideStatusDropdown = (event:MouseEvent) => {
-      if(statusRef.current && !statusRef.current.contains(event.target as Node)){
-        setShowStatus(false)
+  useEffect(() => {
+    const handleClickOutsideStatusDropdown = (event: MouseEvent) => {
+      if (
+        statusRef.current &&
+        !statusRef.current.contains(event.target as Node)
+      ) {
+        setShowStatus(false);
       }
 
-      if(categoryRef.current && !categoryRef.current.contains(event.target as Node)){
-        setShowCategory(false)
+      if (
+        categoryRef.current &&
+        !categoryRef.current.contains(event.target as Node)
+      ) {
+        setShowCategory(false);
       }
-
     };
 
-    if(showStatus || showCategory || dropDownOpen) {
-      document.addEventListener("mousedown", handleClickOutsideStatusDropdown)
+    if (showStatus || showCategory || dropDownOpen) {
+      document.addEventListener("mousedown", handleClickOutsideStatusDropdown);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutsideStatusDropdown)
-    }
-  }, [showStatus, showCategory])
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutsideStatusDropdown
+      );
+    };
+  }, [showStatus, showCategory, dropDownOpen]);
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
@@ -183,7 +200,7 @@ const Todo: React.FC<Props> = ({
     };
 
     const updatedTasks = [...taskList, newTask];
-    toast("Task is added");
+    showToast("success", "Task added successfully!");
     setTaskList(updatedTasks);
     setFilteredTasks(updatedTasks);
 
@@ -333,7 +350,10 @@ const Todo: React.FC<Props> = ({
               )}
             </Button>
             {showStatus && (
-              <div className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10" ref={statusRef}>
+              <div
+                className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
+                ref={statusRef}
+              >
                 <ul className="flex flex-col">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
@@ -378,7 +398,10 @@ const Todo: React.FC<Props> = ({
               )}
             </Button>
             {showCategory && (
-              <div className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10" ref={categoryRef}>
+              <div
+                className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
+                ref={categoryRef}
+              >
                 <ul className="flex flex-col">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
@@ -562,6 +585,7 @@ const Todo: React.FC<Props> = ({
             </div>
           );
         })}
+      <ToastContainer />
     </div>
   );
 };
