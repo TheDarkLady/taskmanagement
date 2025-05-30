@@ -162,7 +162,7 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <div className="flex flex-col justify-center items-center gap-2">
+          <div className="relative flex flex-row justify-center items-center gap-2">
             <Button
               className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => {

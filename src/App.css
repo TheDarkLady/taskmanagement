@@ -140,6 +140,12 @@
 
 }
 
+.react-datepicker{
+  position: absolute !important;
+  left: 100%;
+  z-index: 100;
+}
+
 .category-btn:hover .category-plus-icon, .status-btn:hover .status-plus-icon, .list-btn:hover .list-icon{
   fill: #fff;
 }
@@ -149,5 +155,10 @@
   }
   .login-page-mobile-container {
     display: flex;
+  }
+  .react-datepicker{
+    left: unset !important;
+    top: 130% !important;
+    right: 5%;
   }
 }
