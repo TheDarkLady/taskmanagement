@@ -142,7 +142,7 @@
 
 .react-datepicker{
   position: absolute !important;
-  left: 100%;
+  top: 130%;
   z-index: 100;
 }
 
@@ -157,7 +157,6 @@
     display: flex;
   }
   .react-datepicker{
-    left: unset !important;
     top: 130% !important;
     right: 5%;
   }
