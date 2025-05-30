@@ -11,6 +11,7 @@ import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
 import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
   componentStatus: string;
@@ -22,7 +23,10 @@ interface Props {
   dateFilter: Date | null;
   isListView: boolean;
   checkedTasks: { [key: string]: boolean };
-  handleChecked: (e: React.ChangeEvent<HTMLInputElement>, taskId: string) => void;
+  handleChecked: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    taskId: string
+  ) => void;
 }
 
 const Todo: React.FC<Props> = ({
@@ -47,7 +51,11 @@ const Todo: React.FC<Props> = ({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [dropDownOpen, setDropDownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null)
+  const categoryRef = useRef<HTMLDivElement>(null)
 
+  
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
@@ -78,6 +86,51 @@ const Todo: React.FC<Props> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropDownOpen]);
+
+  // removing datepicker on clicking outsite
+
+  useEffect(() => {
+    const handleClickOutsideDatePicker = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePick(false); // Close the date picker
+      }
+    };
+
+    if (showDatePick) {
+      document.addEventListener("mousedown", handleClickOutsideDatePicker);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideDatePicker);
+    };
+  }, [showDatePick]);
+
+
+  // removing status dropdown on clicking outside
+
+  useEffect(()=> {
+    const handleClickOutsideStatusDropdown = (event:MouseEvent) => {
+      if(statusRef.current && !statusRef.current.contains(event.target as Node)){
+        setShowStatus(false)
+      }
+
+      if(categoryRef.current && !categoryRef.current.contains(event.target as Node)){
+        setShowCategory(false)
+      }
+
+    };
+
+    if(showStatus || showCategory || dropDownOpen) {
+      document.addEventListener("mousedown", handleClickOutsideStatusDropdown)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideStatusDropdown)
+    }
+  }, [showStatus, showCategory])
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
@@ -130,7 +183,7 @@ const Todo: React.FC<Props> = ({
     };
 
     const updatedTasks = [...taskList, newTask];
-
+    toast("Task is added");
     setTaskList(updatedTasks);
     setFilteredTasks(updatedTasks);
 
@@ -157,11 +210,12 @@ const Todo: React.FC<Props> = ({
   };
 
   return (
-    <div 
+    <div
       className="w-full bg-[#f1f1f1] rounded-lg mb-10"
       onDragOver={handleDragOver}
       onDrop={(event) => handleDrop(event, componentStatus)}
     >
+      <ToastContainer />
       <div
         className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
           componentStatus === "In Progress"
@@ -209,19 +263,19 @@ const Todo: React.FC<Props> = ({
       <div className=" flex-col hidden addtask">
         <div
           className={`${
-            isListView ? "flex-col md:flex-row" : "flex-col gap-5"
+            isListView ? "flex-col lg:flex-row" : "flex-col gap-5"
           } flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}
         >
-          <div className="w-[30%] flex flex-col gap-5 items-center justify-start">
+          <div className="w-full lg:w-[30%] flex flex-col gap-5 items-center justify-start px-5">
             <input
               type="text"
               placeholder="Task Title"
-              className="py-3 px-2 bg-transparent border-none border rounded-lg text-[#000]"
+              className="w-full py-3 px-2 bg-transparent border border-[#0000001A] rounded-lg text-[#000]"
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
             <div
-              className={`hidden md:${
+              className={`hidden lg:${
                 isListView ? "flex" : "hidden"
               }   flex-row justify-center items-center gap-5`}
             >
@@ -244,7 +298,7 @@ const Todo: React.FC<Props> = ({
               </Button>
             </div>
           </div>
-          <div className="w-[20%] flex flex-col items-center justify-start gap-[5px]">
+          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start gap-[5px]">
             <Button
               className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => setShowDatePick(!showDatePick)}
@@ -255,17 +309,19 @@ const Todo: React.FC<Props> = ({
                 : selectedDate?.toDateString()}
             </Button>
             {showDatePick && (
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date: Date | null) => {
-                  setSelectedDate(date);
-                  setShowDatePick(!showDatePick);
-                }}
-                inline
-              />
+              <div className="relative lg:absolute z-100 " ref={datePickerRef}>
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date: Date | null) => {
+                    setSelectedDate(date);
+                    setShowDatePick(!showDatePick);
+                  }}
+                  inline
+                />
+              </div>
             )}
           </div>
-          <div className="w-[20%] flex items-center justify-start relative">
+          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
             <Button
               className="status-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
               onClick={() => setShowStatus(!showStatus)}
@@ -277,7 +333,7 @@ const Todo: React.FC<Props> = ({
               )}
             </Button>
             {showStatus && (
-              <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
+              <div className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10" ref={statusRef}>
                 <ul className="flex flex-col">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
@@ -310,7 +366,7 @@ const Todo: React.FC<Props> = ({
               </div>
             )}
           </div>
-          <div className="w-[20%] flex items-center justify-start relative">
+          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
             <Button
               className="category-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
               onClick={() => setShowCategory(!showCategory)}
@@ -322,7 +378,7 @@ const Todo: React.FC<Props> = ({
               )}
             </Button>
             {showCategory && (
-              <div className="absolute top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10">
+              <div className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10" ref={categoryRef}>
                 <ul className="flex flex-col">
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
@@ -348,7 +404,7 @@ const Todo: React.FC<Props> = ({
           </div>
           <div
             className={`flex ${
-              isListView ? "md:hidden" : "md:flex"
+              isListView ? "lg:hidden" : "lg:flex"
             } flex-row justify-center items-center gap-5 `}
           >
             <Button
@@ -369,7 +425,7 @@ const Todo: React.FC<Props> = ({
               Cancel
             </Button>
           </div>
-          <div className="w-[10%] flex items-center justify-start relative"></div>
+          {/* <div className="w-[10%] flex items-center justify-start relative"></div> */}
         </div>
       </div>
 
@@ -413,14 +469,16 @@ const Todo: React.FC<Props> = ({
               >
                 <div
                   className={`w-auto ${
-                    isListView ? "md:w-[30%] items-center justify-start" : "md:w-[100%] items-center justify-center"
+                    isListView
+                      ? "md:w-[30%] items-center justify-start"
+                      : "md:w-[100%] items-center justify-center"
                   } flex flex-row gap-5 `}
                 >
-                  <input 
-                  type="checkbox" 
-                  checked={checkedTasks[task.id] || false}  
-                  className="m-0"
-                  onChange={(e) => handleChecked(e, task.id)}
+                  <input
+                    type="checkbox"
+                    checked={checkedTasks[task.id] || false}
+                    className="m-0"
+                    onChange={(e) => handleChecked(e, task.id)}
                   />
                   <p
                     className={`${
@@ -434,7 +492,9 @@ const Todo: React.FC<Props> = ({
                 </div>
                 <div
                   className={`w-auto ${
-                    isListView ? "md:w-[20%] items-start justify-start" : "md:w-[100%] items-center justify-center"
+                    isListView
+                      ? "md:w-[20%] items-start justify-start"
+                      : "md:w-[100%] items-center justify-center"
                   } hidden md:flex flex-col  gap-[5px]`}
                 >
                   <p className="text-[#000]">
@@ -499,7 +559,6 @@ const Todo: React.FC<Props> = ({
                   )}
                 </div>
               </div>
-        
             </div>
           );
         })}

@@ -180,7 +180,10 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <div className="relative flex flex-row justify-center items-center gap-2" ref={datePickerRef}>
+          <div
+            className="relative flex flex-row justify-center items-center gap-2"
+            ref={datePickerRef}
+          >
             <Button
               className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => {
@@ -195,15 +198,17 @@ function Dashboard() {
               {dateFilter === null ? "Due Date" : dateFilter?.toDateString()}
             </Button>
             {showDateFilterPick && (
-              <DatePicker
-                selected={dateFilter}
-                onChange={(date: Date | null) => {
-                  setDateFilter(date);
-                  setShowDateFilterPick(false);
-                  console.log("Date :", dateFilter);
-                }}
-                inline
-              />
+              <div className="absolute z-100 top-[130%]">
+                <DatePicker
+                  selected={dateFilter}
+                  onChange={(date: Date | null) => {
+                    setDateFilter(date);
+                    setShowDateFilterPick(false);
+                    console.log("Date :", dateFilter);
+                  }}
+                  inline
+                />
+              </div>
             )}
           </div>
         </div>
