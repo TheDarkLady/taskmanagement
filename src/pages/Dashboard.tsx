@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "../views/Navbar";
 import { Button } from "../components/ui/button";
 import { RiLogoutBoxLine } from "react-icons/ri";
@@ -31,6 +31,7 @@ function Dashboard() {
     {}
   );
   const navigate = useNavigate();
+  const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
@@ -42,6 +43,23 @@ function Dashboard() {
     }, 500);
     return () => clearTimeout(delaySearch);
   }, [searchInput]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showDateFilterPick &&
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDateFilterPick(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDateFilterPick]);
 
   async function handleLogout() {
     try {
@@ -162,7 +180,7 @@ function Dashboard() {
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <div className="relative flex flex-row justify-center items-center gap-2">
+          <div className="relative flex flex-row justify-center items-center gap-2" ref={datePickerRef}>
             <Button
               className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
               onClick={() => {
@@ -181,7 +199,7 @@ function Dashboard() {
                 selected={dateFilter}
                 onChange={(date: Date | null) => {
                   setDateFilter(date);
-                  setShowDateFilterPick(!showDateFilterPick);
+                  setShowDateFilterPick(false);
                   console.log("Date :", dateFilter);
                 }}
                 inline
@@ -254,20 +272,18 @@ function Dashboard() {
                   handleChecked={handleChecked}
                   checkedTasks={checkedTasks}
                 />
-                  {isChecked && (
-                    <OverlayStatusbar
-                      checkedTasks={checkedTasks}
-                      setCheckedTasks={setCheckedTasks}
-                      isChecked={isChecked}
-                      setIsChecked={setIsChecked}
-                      taskList={taskList}
-                      setTaskList={setTaskList}
-                      filteredTasks={filteredTasks}
-                      setFilteredTasks={setFilteredTasks}
-
-                    />
-                  )}
-          
+                {isChecked && (
+                  <OverlayStatusbar
+                    checkedTasks={checkedTasks}
+                    setCheckedTasks={setCheckedTasks}
+                    isChecked={isChecked}
+                    setIsChecked={setIsChecked}
+                    taskList={taskList}
+                    setTaskList={setTaskList}
+                    filteredTasks={filteredTasks}
+                    setFilteredTasks={setFilteredTasks}
+                  />
+                )}
               </>
             );
           })}
