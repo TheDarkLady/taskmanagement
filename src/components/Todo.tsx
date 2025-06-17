@@ -11,7 +11,8 @@ import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
 import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import {toast} from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   componentStatus: string;
@@ -54,17 +55,18 @@ const Todo: React.FC<Props> = ({
   const datePickerRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
-  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
-  toast[type](message, {
-    position: "top-right",
-    autoClose: 3000,       // Close after 3 seconds
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
-};
+
+    const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+    toast[type](message, {
+      position: "top-center",
+      autoClose: 3000,       // Close after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
@@ -201,6 +203,14 @@ const Todo: React.FC<Props> = ({
 
     const updatedTasks = [...taskList, newTask];
     showToast("success", "Task added successfully!");
+    // toast.success("Task added successfully!", {
+    //   position: "top-right",
+    //   autoClose: 3000, // closes after 3 seconds
+    //   closeOnClick: true,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    // });
+    // toast.success("Wow so easy!", { toastId: "success" });
     setTaskList(updatedTasks);
     setFilteredTasks(updatedTasks);
 
@@ -209,9 +219,12 @@ const Todo: React.FC<Props> = ({
   };
 
   const handleDeleteTask = (id: string) => {
+     console.log("Deleting task:", id); // debug
     const newTaskList = taskList.filter((task) => task.id !== id);
     setTaskList(newTaskList);
     setFilteredTasks(newTaskList);
+    showToast("error", "Task deleted successfully!");
+
   };
 
   const resetTaskInputs = () => {
@@ -227,74 +240,213 @@ const Todo: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className="w-full bg-[#f1f1f1] rounded-lg mb-10"
-      onDragOver={handleDragOver}
-      onDrop={(event) => handleDrop(event, componentStatus)}
-    >
-      <ToastContainer />
+    <>
       <div
-        className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
-          componentStatus === "In Progress"
-            ? "bg-[#85D9F1]"
-            : componentStatus === "completed"
-            ? "bg-[#CEFFCC]"
-            : "bg-[#FAC3FF]"
-        }`}
+        className="w-full bg-[#f1f1f1] rounded-lg mb-10"
+        onDragOver={handleDragOver}
+        onDrop={(event) => handleDrop(event, componentStatus)}
       >
-        <p className="text-[#000] font-semibold text-base">
-          {componentStatus} (
-          {dateFilter
-            ? taskList.filter(
-                (task) =>
-                  task.selectedDate &&
-                  new Date(task.selectedDate).getDate() ===
-                    dateFilter.getDate() &&
-                  new Date(task.selectedDate).getMonth() ===
-                    dateFilter.getMonth() &&
-                  new Date(task.selectedDate).getFullYear() ===
-                    dateFilter.getFullYear() &&
-                  task.status === componentStatus &&
-                  (categoryFilter === "all" || task.category === categoryFilter)
-              ).length
-            : taskList.filter(
-                (task) =>
-                  task.status === componentStatus &&
-                  (categoryFilter === "all" || task.category === categoryFilter)
-              ).length}
-          )
-        </p>
-        <FaAngleUp className="fill-[#3E0344]" />
-      </div>
-      {componentStatus == "todo" && (
         <div
-          className="hidden md:flex w-full py-6 px-10  flex-row justify-start items-center gap-2 cursor-pointer"
-          onClick={openAddTask}
+          className={`w-full py-5 px-5 flex items-center justify-between rounded-t-xl ${
+            componentStatus === "In Progress"
+              ? "bg-[#85D9F1]"
+              : componentStatus === "completed"
+              ? "bg-[#CEFFCC]"
+              : "bg-[#FAC3FF]"
+          }`}
         >
-          <GoPlus className="fill-[#7B1984]" />
-          <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase ">
-            Add Task
+          <p className="text-[#000] font-semibold text-base">
+            {componentStatus} (
+            {dateFilter
+              ? taskList.filter(
+                  (task) =>
+                    task.selectedDate &&
+                    new Date(task.selectedDate).getDate() ===
+                      dateFilter.getDate() &&
+                    new Date(task.selectedDate).getMonth() ===
+                      dateFilter.getMonth() &&
+                    new Date(task.selectedDate).getFullYear() ===
+                      dateFilter.getFullYear() &&
+                    task.status === componentStatus &&
+                    (categoryFilter === "all" ||
+                      task.category === categoryFilter)
+                ).length
+              : taskList.filter(
+                  (task) =>
+                    task.status === componentStatus &&
+                    (categoryFilter === "all" ||
+                      task.category === categoryFilter)
+                ).length}
+            )
           </p>
+          <FaAngleUp className="fill-[#3E0344]" />
         </div>
-      )}
-      <div className=" flex-col hidden addtask">
-        <div
-          className={`${
-            isListView ? "flex-col lg:flex-row" : "flex-col gap-5"
-          } flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}
-        >
-          <div className="w-full lg:w-[30%] flex flex-col gap-5 items-center justify-start px-5">
-            <input
-              type="text"
-              placeholder="Task Title"
-              className="w-full py-3 px-2 bg-transparent border border-[#0000001A] rounded-lg text-[#000]"
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-            />
+        {componentStatus == "todo" && (
+          <div
+            className="hidden md:flex w-full py-6 px-10  flex-row justify-start items-center gap-2 cursor-pointer"
+            onClick={openAddTask}
+          >
+            <GoPlus className="fill-[#7B1984]" />
+            <p className="text-[#000000CC] font-mulish font-sm font-semibold uppercase ">
+              Add Task
+            </p>
+          </div>
+        )}
+        <div className=" flex-col hidden addtask">
+          <div
+            className={`${
+              isListView ? "flex-col lg:flex-row" : "flex-col gap-5"
+            } flex  justify-center items-center py-5 border-t-[2px] border-[#0000001A] gap-2 md:gap-5`}
+          >
+            <div className="w-full lg:w-[30%] flex flex-col gap-5 items-center justify-start px-5">
+              <input
+                type="text"
+                placeholder="Task Title"
+                className="w-full py-3 px-2 bg-transparent border border-[#0000001A] rounded-lg text-[#000]"
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+              />
+              <div
+                className={`hidden lg:${
+                  isListView ? "flex" : "hidden"
+                }   flex-row justify-center items-center gap-5`}
+              >
+                <Button
+                  className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
+                  onClick={handleAddTask}
+                >
+                  Add
+                  <PiArrowBendDownLeftFill />
+                </Button>
+                <Button
+                  className="bg-[#fff] text-[#000] px-10 py-2 rounded-[20px] flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
+                  onClick={() => {
+                    // console.log(taskList);
+                    // resetTaskInputs();
+                    openAddTask();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+            <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start gap-[5px]">
+              <Button
+                className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
+                onClick={() => setShowDatePick(!showDatePick)}
+              >
+                <SlCalender />
+                {selectedDate === null
+                  ? "Add Date"
+                  : selectedDate?.toDateString()}
+              </Button>
+              {showDatePick && (
+                <div
+                  className="relative lg:absolute z-100 "
+                  ref={datePickerRef}
+                >
+                  <DatePicker
+                    selected={selectedDate}
+                    onChange={(date: Date | null) => {
+                      setSelectedDate(date);
+                      setShowDatePick(!showDatePick);
+                    }}
+                    inline
+                  />
+                </div>
+              )}
+            </div>
+            <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
+              <Button
+                className="status-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
+                onClick={() => setShowStatus(!showStatus)}
+              >
+                {status === "" ? (
+                  <GoPlus className="fill-[#00000066] status-plus-icon" />
+                ) : (
+                  status
+                )}
+              </Button>
+              {showStatus && (
+                <div
+                  className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
+                  ref={statusRef}
+                >
+                  <ul className="flex flex-col">
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
+                      onClick={() => {
+                        setStatus("todo");
+                        setShowStatus(!showStatus);
+                      }}
+                    >
+                      Todo
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
+                      onClick={() => {
+                        setStatus("In Progress");
+                        setShowStatus(!showStatus);
+                      }}
+                    >
+                      In-progress
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
+                      onClick={() => {
+                        setStatus("completed");
+                        setShowStatus(!showStatus);
+                      }}
+                    >
+                      Completed
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
+              <Button
+                className="category-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
+                onClick={() => setShowCategory(!showCategory)}
+              >
+                {category === "" ? (
+                  <GoPlus className="fill-[#00000066] category-plus-icon" />
+                ) : (
+                  category
+                )}
+              </Button>
+              {showCategory && (
+                <div
+                  className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
+                  ref={categoryRef}
+                >
+                  <ul className="flex flex-col">
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
+                      onClick={() => {
+                        setCategory("work");
+                        setShowCategory(!showCategory);
+                      }}
+                    >
+                      Work
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
+                      onClick={() => {
+                        setCategory("personal");
+                        setShowCategory(!showCategory);
+                      }}
+                    >
+                      Personal
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
             <div
-              className={`hidden lg:${
-                isListView ? "flex" : "hidden"
-              }   flex-row justify-center items-center gap-5`}
+              className={`flex ${
+                isListView ? "lg:hidden" : "lg:flex"
+              } flex-row justify-center items-center gap-5 `}
             >
               <Button
                 className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
@@ -304,7 +456,7 @@ const Todo: React.FC<Props> = ({
                 <PiArrowBendDownLeftFill />
               </Button>
               <Button
-                className="bg-[#fff] text-[#000] px-10 py-2 rounded-[20px] flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
+                className="bg-[#fff] text-[#000] px-10 py-2  flex items-center hover:bg-[#7B1984] hover:text-[#fff] rounded-[20px]"
                 onClick={() => {
                   // console.log(taskList);
                   // resetTaskInputs();
@@ -314,279 +466,149 @@ const Todo: React.FC<Props> = ({
                 Cancel
               </Button>
             </div>
+            {/* <div className="w-[10%] flex items-center justify-start relative"></div> */}
           </div>
-          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start gap-[5px]">
-            <Button
-              className="heading-bar-para bg-[#fff] rounded-full hover:bg-[#7B1984] hover:text-[#fff] border"
-              onClick={() => setShowDatePick(!showDatePick)}
-            >
-              <SlCalender />
-              {selectedDate === null
-                ? "Add Date"
-                : selectedDate?.toDateString()}
-            </Button>
-            {showDatePick && (
-              <div className="relative lg:absolute z-100 " ref={datePickerRef}>
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date: Date | null) => {
-                    setSelectedDate(date);
-                    setShowDatePick(!showDatePick);
-                  }}
-                  inline
-                />
-              </div>
-            )}
-          </div>
-          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
-            <Button
-              className="status-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
-              onClick={() => setShowStatus(!showStatus)}
-            >
-              {status === "" ? (
-                <GoPlus className="fill-[#00000066] status-plus-icon" />
-              ) : (
-                status
-              )}
-            </Button>
-            {showStatus && (
-              <div
-                className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
-                ref={statusRef}
-              >
-                <ul className="flex flex-col">
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
-                    onClick={() => {
-                      setStatus("todo");
-                      setShowStatus(!showStatus);
-                    }}
-                  >
-                    Todo
-                  </li>
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
-                    onClick={() => {
-                      setStatus("In Progress");
-                      setShowStatus(!showStatus);
-                    }}
-                  >
-                    In-progress
-                  </li>
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
-                    onClick={() => {
-                      setStatus("completed");
-                      setShowStatus(!showStatus);
-                    }}
-                  >
-                    Completed
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-          <div className="w-auto lg:w-[20%] flex flex-col lg:flex-row items-center justify-start relative">
-            <Button
-              className="category-btn heading-bar-para bg-transparent border rounded-full hover:bg-[#7B1984] hover:text-[#fff] hover:border-none"
-              onClick={() => setShowCategory(!showCategory)}
-            >
-              {category === "" ? (
-                <GoPlus className="fill-[#00000066] category-plus-icon" />
-              ) : (
-                category
-              )}
-            </Button>
-            {showCategory && (
-              <div
-                className="relative lg:absolute top-1 lg:top-12 left-0 w-[150px] bg-white border rounded shadow-md z-10"
-                ref={categoryRef}
-              >
-                <ul className="flex flex-col">
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
-                    onClick={() => {
-                      setCategory("work");
-                      setShowCategory(!showCategory);
-                    }}
-                  >
-                    Work
-                  </li>
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-[#000] hover:text-[#7B1984]"
-                    onClick={() => {
-                      setCategory("personal");
-                      setShowCategory(!showCategory);
-                    }}
-                  >
-                    Personal
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-          <div
-            className={`flex ${
-              isListView ? "lg:hidden" : "lg:flex"
-            } flex-row justify-center items-center gap-5 `}
-          >
-            <Button
-              className="add-task-btn text-[#fff] px-2 py-2 rounded-md flex items-center"
-              onClick={handleAddTask}
-            >
-              Add
-              <PiArrowBendDownLeftFill />
-            </Button>
-            <Button
-              className="bg-[#fff] text-[#000] px-10 py-2  flex items-center hover:bg-[#7B1984] hover:text-[#fff] rounded-[20px]"
-              onClick={() => {
-                // console.log(taskList);
-                // resetTaskInputs();
-                openAddTask();
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-          {/* <div className="w-[10%] flex items-center justify-start relative"></div> */}
         </div>
-      </div>
 
-      {filteredTasks
-        .filter((allTask) => {
-          // console.log("Date filter :", dateFilter);
-          // console.log("Task selected Date :", allTask.selectedDate);
+        {filteredTasks
+          .filter((allTask) => {
+            // console.log("Date filter :", dateFilter);
+            // console.log("Task selected Date :", allTask.selectedDate);
 
-          if (allTask.status !== componentStatus) return false;
+            if (allTask.status !== componentStatus) return false;
 
-          if (categoryFilter !== "all" && allTask.category !== categoryFilter) {
-            return false;
-          }
+            if (
+              categoryFilter !== "all" &&
+              allTask.category !== categoryFilter
+            ) {
+              return false;
+            }
 
-          if (
-            dateFilter &&
-            allTask.selectedDate &&
-            dateFilter.getDate() === new Date(allTask.selectedDate).getDate() &&
-            dateFilter.getMonth() ===
-              new Date(allTask.selectedDate).getMonth() &&
-            dateFilter.getFullYear() ===
-              new Date(allTask.selectedDate).getFullYear()
-          ) {
-            return true;
-          }
-          return dateFilter === null;
-        })
-        .map((task) => {
-          return (
-            <div
-              key={task.id}
-              draggable
-              onDragStart={(event) => handleDragStart(event, task.id)}
-            >
+            if (
+              dateFilter &&
+              allTask.selectedDate &&
+              dateFilter.getDate() ===
+                new Date(allTask.selectedDate).getDate() &&
+              dateFilter.getMonth() ===
+                new Date(allTask.selectedDate).getMonth() &&
+              dateFilter.getFullYear() ===
+                new Date(allTask.selectedDate).getFullYear()
+            ) {
+              return true;
+            }
+            return dateFilter === null;
+          })
+          .map((task) => {
+            return (
               <div
-                className={`${
-                  isListView
-                    ? "flex flex-row justify-between items-center"
-                    : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"
-                } px-5  py-5 border-t-[2px] border-[#0000001A]`}
+                key={task.id}
+                draggable
+                onDragStart={(event) => handleDragStart(event, task.id)}
               >
                 <div
-                  className={`w-auto ${
+                  className={`${
                     isListView
-                      ? "md:w-[30%] items-center justify-start"
-                      : "md:w-[100%] items-center justify-center"
-                  } flex flex-row gap-5 `}
+                      ? "flex flex-row justify-between items-center"
+                      : "grid grid-cols-2 grid-rows-2 gap-5 justify-items-center"
+                  } px-5  py-5 border-t-[2px] border-[#0000001A]`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={checkedTasks[task.id] || false}
-                    className="m-0"
-                    onChange={(e) => handleChecked(e, task.id)}
-                  />
-                  <p
-                    className={`${
-                      isListView ? "font-normal" : "font-bold"
-                    } text-[#000] ${
-                      task.status === "completed" ? "line-through" : "none"
-                    }`}
+                  <div
+                    className={`w-auto ${
+                      isListView
+                        ? "md:w-[30%] items-center justify-start"
+                        : "md:w-[100%] items-center justify-center"
+                    } flex flex-row gap-5 `}
                   >
-                    {task.taskTitle}
-                  </p>
-                </div>
-                <div
-                  className={`w-auto ${
-                    isListView
-                      ? "md:w-[20%] items-start justify-start"
-                      : "md:w-[100%] items-center justify-center"
-                  } hidden md:flex flex-col  gap-[5px]`}
-                >
-                  <p className="text-[#000]">
-                    {task.selectedDate
-                      ? new Date(task.selectedDate).toDateString() ===
-                        new Date().toDateString()
-                        ? "Today"
-                        : `${new Date(task.selectedDate).toLocaleDateString(
-                            "en-GB",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                            }
-                          )}, ${new Date(task.selectedDate).getFullYear()}`
-                      : "No Date"}
-                  </p>
-                </div>
-                <div
-                  className={`${
-                    isListView
-                      ? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative"
-                      : "hidden "
-                  } `}
-                >
-                  <p className="text-[#000]">{task.status}</p>
-                </div>
-                <div
-                  className={`w-auto ${
-                    isListView
-                      ? "md:w-[20%] items-start justify-start"
-                      : "md:w-[100%] items-center justify-center"
-                  } hidden md:flex relative`}
-                >
-                  <p className="text-[#000]">{task.category}</p>
-                </div>
-
-                <div
-                  className={`${
-                    isListView
-                      ? "items-start justify-start"
-                      : "items-center justify-center"
-                  } w-auto md:w-[10%] flex relative`}
-                >
-                  <BiDotsHorizontalRounded
-                    className="fill-[#000]"
-                    onClick={() => {
-                      openEditPopup(task);
-                      // e.stopPropagation();
-                      setDropDownOpen(!dropDownOpen);
-                    }}
-                  />
-
-                  {selectedTask && selectedTask === task && (
-                    <EditPopUp
-                      task={selectedTask}
-                      setFilteredTasks={setFilteredTasks}
-                      setTaskList={setTaskList}
-                      handleDeleteTask={handleDeleteTask}
-                      dropDownOpen={dropDownOpen}
-                      setDropDownOpen={setDropDownOpen}
+                    <input
+                      type="checkbox"
+                      checked={checkedTasks[task.id] || false}
+                      className="m-0"
+                      onChange={(e) => handleChecked(e, task.id)}
                     />
-                  )}
+                    <p
+                      className={`${
+                        isListView ? "font-normal" : "font-bold"
+                      } text-[#000] ${
+                        task.status === "completed" ? "line-through" : "none"
+                      }`}
+                    >
+                      {task.taskTitle}
+                    </p>
+                  </div>
+                  <div
+                    className={`w-auto ${
+                      isListView
+                        ? "md:w-[20%] items-start justify-start"
+                        : "md:w-[100%] items-center justify-center"
+                    } hidden md:flex flex-col  gap-[5px]`}
+                  >
+                    <p className="text-[#000]">
+                      {task.selectedDate
+                        ? new Date(task.selectedDate).toDateString() ===
+                          new Date().toDateString()
+                          ? "Today"
+                          : `${new Date(task.selectedDate).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                              }
+                            )}, ${new Date(task.selectedDate).getFullYear()}`
+                        : "No Date"}
+                    </p>
+                  </div>
+                  <div
+                    className={`${
+                      isListView
+                        ? "hidden w-auto md:w-[20%] md:flex items-start justify-start relative"
+                        : "hidden "
+                    } `}
+                  >
+                    <p className="text-[#000]">{task.status}</p>
+                  </div>
+                  <div
+                    className={`w-auto ${
+                      isListView
+                        ? "md:w-[20%] items-start justify-start"
+                        : "md:w-[100%] items-center justify-center"
+                    } hidden md:flex relative`}
+                  >
+                    <p className="text-[#000]">{task.category}</p>
+                  </div>
+
+                  <div
+                    className={`${
+                      isListView
+                        ? "items-start justify-start"
+                        : "items-center justify-center"
+                    } w-auto md:w-[10%] flex relative`}
+                  >
+                    <BiDotsHorizontalRounded
+                      className="fill-[#000]"
+                      onClick={() => {
+                        openEditPopup(task);
+                        // e.stopPropagation();
+                        setDropDownOpen(!dropDownOpen);
+                      }}
+                    />
+
+                    {selectedTask && selectedTask === task && (
+                      <EditPopUp
+                        task={selectedTask}
+                        setFilteredTasks={setFilteredTasks}
+                        setTaskList={setTaskList}
+                        handleDeleteTask={handleDeleteTask}
+                        dropDownOpen={dropDownOpen}
+                        setDropDownOpen={setDropDownOpen}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      <ToastContainer />
-    </div>
+            );
+          })}
+      </div>
+    </>
   );
 };
 

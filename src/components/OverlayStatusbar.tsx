@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import {toast} from "react-toastify"
 
 interface Props {
   checkedTasks?: { [key: string]: boolean };
@@ -33,6 +34,18 @@ const OverlayStatusbar: React.FC<Props> = ({
 }) => {
   const checkedTasksCount = Object.keys(checkedTasks).length;
 
+  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+      toast[type](message, {
+        position: "top-center",
+        autoClose: 3000,       // Close after 3 seconds
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    };
+
   const clearCheckedTasks = () => {
     setCheckedTasks({});
     setIsChecked(false);
@@ -54,6 +67,7 @@ const OverlayStatusbar: React.FC<Props> = ({
     console.log("newFilteredTaskList", newFilteredTaskList);
     setCheckedTasks({});
     setIsChecked(false);
+    showToast("error", "Task deleted successfully!");
   };
 
   const handleChange = (key: keyof Task, value: any) => {
@@ -70,6 +84,7 @@ const OverlayStatusbar: React.FC<Props> = ({
     );
     setCheckedTasks({});
     setIsChecked(false);
+    showToast("info", "Task saved successfully!");
   };
 
   return (

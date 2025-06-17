@@ -17,6 +17,7 @@ import {
 } from "../components/ui/select";
 import DatePicker from "react-datepicker";
 import { Task } from "../types/Task";
+import {toast} from "react-toastify"
 
 interface EditPopUpProps {
   task: Task;
@@ -39,6 +40,19 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
   const [editedTask, setEditedTask] = useState<Task>(task);
   console.log("EditTask", editedTask);
   // Handle local state updates
+
+  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+      toast[type](message, {
+        position: "top-center",
+        autoClose: 3000,       // Close after 3 seconds
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    };
+
   const handleChange = (key: keyof Task, value: any) => {
     setEditedTask((prev) => ({ ...prev, [key]: value }));
   };
@@ -53,6 +67,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
     );
     setOpen(false);
     setDropDownOpen(false)
+    showToast("info", "Task saved successfully!");
   };
 
   return (
