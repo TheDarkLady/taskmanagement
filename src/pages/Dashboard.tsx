@@ -13,6 +13,8 @@ import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import { CiSearch } from "react-icons/ci";
 import OverlayStatusbar from "../components/OverlayStatusbar.tsx";
+import {toast} from "react-toastify"
+
 function Dashboard() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<Date | null>(null);
@@ -30,6 +32,17 @@ function Dashboard() {
   const [checkedTasks, setCheckedTasks] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+          toast[type](message, {
+            position: "top-center",
+            autoClose: 3000,       // Close after 3 seconds
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        };
   const navigate = useNavigate();
   const datePickerRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +78,7 @@ function Dashboard() {
     try {
       await auth.signOut();
       navigate("/");
+      showToast("success", "Logged out successfully!");
     } catch (error) {
       if (error instanceof Error) {
         console.log("Error Logging out: ", error.message);

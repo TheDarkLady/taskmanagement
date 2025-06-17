@@ -112,7 +112,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                    <Label htmlFor="description">Description</Label>
                    <textarea
                      id="description"
-                     className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] dark:text-[#fff] rounded p-2"
+                     className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] dark:text-[#fff] rounded p-2 h-[100px]"
                      placeholder="Add a description"
                      value={editedTask.description}
                      onChange={(e) =>

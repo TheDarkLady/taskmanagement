@@ -7,9 +7,23 @@ import { useNavigate } from "react-router-dom";
 import { auth , db} from '../firebase/firebase.ts';
 import {setDoc, doc} from 'firebase/firestore';
 import {GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
+import {toast} from "react-toastify"
 
 function Login() {
   const navigate = useNavigate();
+
+  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+        toast[type](message, {
+          position: "top-center",
+          autoClose: 3000,       // Close after 3 seconds
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
+
   const handleLogin =  () => {
     
     const provider = new GoogleAuthProvider();
@@ -22,6 +36,7 @@ function Login() {
           email: user.email,
           photo: user.photoURL
         })
+        showToast("success", "Logged in successfully!");
         navigate('/dashboard')
       }
     })
