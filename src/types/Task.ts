@@ -5,7 +5,7 @@ export interface Task {
     selectedDate: Date | null;
     status: string;
     category: string;
-    attachment?: File[];
+    attachment?:string;
 }
 
 export interface User {
