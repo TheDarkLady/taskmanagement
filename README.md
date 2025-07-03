@@ -1,50 +1,58 @@
-# React + TypeScript + Vite
+# TaskBuddy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TaskBuddy is a task management application built with React and TypeScript. It features Google Authentication for sign-in and allows users to add, update, edit, delete, and manage tasks efficiently. The app supports drag-and-drop functionality and is fully mobile responsive.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Google Authentication**: Secure sign-in using Google Authentication.
+- **Task Management**: Add, edit, update, and delete tasks.
+- **Task Status & Due Date**: Assign status and due dates to tasks.
+- **Drag and Drop**: Reorder tasks with a simple drag-and-drop interface.
+- **Mobile Responsive**: Optimized for mobile and desktop views.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend**: React, TypeScript
+- **Authentication**: Google Authentication
+- **State Management**: React Context 
+- **Styling**: CSS & TailwindCSS 
+- **Drag & Drop**: HTML attributes and JavaScript functions
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. Clone the repository
+   git clone https://github.com/TheDarkLady/taskmanagement.git
+   cd taskbuddy
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Install dependencies
+   npm install
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+4. Start the development server:
+   npm run dev
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Usage
+
+- Sign in using your Google account.
+- Add new tasks with a title, status, category, and due date.
+- Edit, update, or delete tasks as needed.
+- Drag and drop tasks to reorder them.
+- Works on both desktop and mobile devices.
+
+## Deployment
+
+To deploy the app, follow these steps:
+
+1. Build the project
+   npm run build
+   
+2. Deployed render.com .
+   https://taskmanagement-rfxp.onrender.com/
+
+## Contributing
+
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+## License
+
+Happy Task Management! 🎯
+
