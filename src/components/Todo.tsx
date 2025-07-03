@@ -11,8 +11,17 @@ import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
 import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "../firebase/firebase"; // adjust path if needed
+import { useAuth } from "../firebase/AuthContext";
 
 interface Props {
   componentStatus: string;
@@ -55,11 +64,15 @@ const Todo: React.FC<Props> = ({
   const datePickerRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
+  const { currentUser } = useAuth();
 
-    const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
+  const showToast = (
+    type: "success" | "error" | "info" | "warn",
+    message: string
+  ) => {
     toast[type](message, {
       position: "top-center",
-      autoClose: 3000,       // Close after 3 seconds
+      autoClose: 3000, // Close after 3 seconds
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -68,17 +81,42 @@ const Todo: React.FC<Props> = ({
     });
   };
 
-  useEffect(() => {
-    const storedTasks = localStorage.getItem("tasks");
-    if (storedTasks) {
-      setTaskList(JSON.parse(storedTasks));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedTasks = localStorage.getItem("tasks");
+  //   if (storedTasks) {
+  //     setTaskList(JSON.parse(storedTasks));
+  //   }
+  // }, []);
 
   // Save tasks to local storage whenever taskList changes
+  // useEffect(() => {
+  //   localStorage.setItem("tasks", JSON.stringify(taskList));
+  // }, [taskList]);
+
+  // storing tasks in firestore
+
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(taskList));
-  }, [taskList]);
+    if (!currentUser?.uid) return;
+
+    const q = collection(db, "Users", currentUser.uid, "tasks");
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const userTasks = snapshot.docs.map((doc) => {
+        const data = doc.data();
+
+        return {
+          ...(data as Task),
+          selectedDate: data.selectedDate?.toDate?.() || null, // 🔥 key fix
+          id: doc.id,
+        };
+      });
+
+      setTaskList(userTasks);
+      setFilteredTasks(userTasks);
+    });
+
+    return () => unsubscribe();
+  }, [setTaskList, setFilteredTasks, currentUser]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -187,44 +225,50 @@ const Todo: React.FC<Props> = ({
     }
   };
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (!taskTitle.trim()) {
       alert("Task Title cannot be empty");
       return;
     }
 
-    const newTask: Task = {
-      id: uuidv4(),
+    if (!currentUser || !currentUser.uid) {
+      showToast("error", "User not logged in.");
+      return;
+    }
+
+    const newTask = {
       taskTitle,
       selectedDate,
       status: status || "todo",
       category: category || "general",
+      createdAt: new Date(),
     };
 
-    const updatedTasks = [...taskList, newTask];
-    showToast("success", "Task added successfully!");
-    // toast.success("Task added successfully!", {
-    //   position: "top-right",
-    //   autoClose: 3000, // closes after 3 seconds
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    // });
-    // toast.success("Wow so easy!", { toastId: "success" });
-    setTaskList(updatedTasks);
-    setFilteredTasks(updatedTasks);
-
-    resetTaskInputs();
-    openAddTask();
+    try {
+      await addDoc(collection(db, "Users", currentUser.uid, "tasks"), newTask);
+      showToast("success", "Task added successfully!");
+      resetTaskInputs();
+      openAddTask();
+    } catch (error) {
+      showToast("error", "Failed to add task");
+      console.error("Firestore Error:", error);
+    }
   };
 
-  const handleDeleteTask = (id: string) => {
-     console.log("Deleting task:", id); // debug
-    const newTaskList = taskList.filter((task) => task.id !== id);
-    setTaskList(newTaskList);
-    setFilteredTasks(newTaskList);
-    showToast("error", "Task deleted successfully!");
+  const handleDeleteTask = async (taskId: string) => {
+    if (!currentUser || !currentUser.uid) {
+      showToast("error", "User not logged in.");
+      return;
+    }
 
+    try {
+      console.log("Deleting path: ", `Users/${currentUser.uid}/tasks/${taskId}`);
+      await deleteDoc(doc(db, "Users", currentUser.uid, "tasks", taskId));
+      showToast("error", "Task deleted");
+    } catch (error) {
+      console.error("Delete error:", error);
+      showToast("error", "Failed to delete task.");
+    }
   };
 
   const resetTaskInputs = () => {

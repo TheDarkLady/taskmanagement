@@ -256,7 +256,10 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
               <span
                 className="text-[#000] w-full h-full block"
-                onClick={() => handleDeleteTask(editedTask.id)}
+                onClick={() => { 
+                  // console.log("Clicked Delete on task:", task.id);
+                  handleDeleteTask(editedTask.id)
+                }}
               >
                 Delete
               </span>

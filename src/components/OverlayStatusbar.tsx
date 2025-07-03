@@ -8,7 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+import { useAuth } from "../firebase/AuthContext";
 
 interface Props {
   checkedTasks?: { [key: string]: boolean };
@@ -33,41 +36,71 @@ const OverlayStatusbar: React.FC<Props> = ({
   setFilteredTasks,
 }) => {
   const checkedTasksCount = Object.keys(checkedTasks).length;
-
-  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
-      toast[type](message, {
-        position: "top-center",
-        autoClose: 3000,       // Close after 3 seconds
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    };
+  const { currentUser } = useAuth();
+  const showToast = (
+    type: "success" | "error" | "info" | "warn",
+    message: string
+  ) => {
+    toast[type](message, {
+      position: "top-center",
+      autoClose: 3000, // Close after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
   const clearCheckedTasks = () => {
     setCheckedTasks({});
     setIsChecked(false);
   };
-  const handleDeleteTask = () => {
+  // const handleDeleteTask = () => {
+  //   const checkedTaskIds = Object.keys(checkedTasks);
+  //   console.log("checkedTaskIds", checkedTaskIds);
+
+  //   const newTaskList = taskList.filter(
+  //     (task) => !checkedTaskIds.includes(task.id)
+  //   );
+  //   setTaskList(newTaskList);
+  //   console.log("newTaskList", newTaskList);
+
+  //   const newFilteredTaskList = filteredTasks.filter(
+  //     (task) => !checkedTaskIds.includes(task.id)
+  //   );
+  //   setFilteredTasks(newFilteredTaskList);
+  //   console.log("newFilteredTaskList", newFilteredTaskList);
+  //   setCheckedTasks({});
+  //   setIsChecked(false);
+  //   showToast("error", "Task deleted successfully!");
+  // };
+
+  const handleDeleteTask = async () => {
     const checkedTaskIds = Object.keys(checkedTasks);
-    console.log("checkedTaskIds", checkedTaskIds);
+    if (!checkedTaskIds.length) return;
 
-    const newTaskList = taskList.filter(
-      (task) => !checkedTaskIds.includes(task.id)
-    );
-    setTaskList(newTaskList);
-    console.log("newTaskList", newTaskList);
+    try {
+      const user = currentUser; // from useAuth
+      if (!user?.uid) {
+        showToast("error", "User not logged in.");
+        return;
+      }
 
-    const newFilteredTaskList = filteredTasks.filter(
-      (task) => !checkedTaskIds.includes(task.id)
-    );
-    setFilteredTasks(newFilteredTaskList);
-    console.log("newFilteredTaskList", newFilteredTaskList);
-    setCheckedTasks({});
-    setIsChecked(false);
-    showToast("error", "Task deleted successfully!");
+      // Delete from Firestore
+      await Promise.all(
+        checkedTaskIds.map((id) =>
+          deleteDoc(doc(db, "Users", user.uid, "tasks", id))
+        )
+      );
+
+      showToast("error", "Tasks deleted successfully!");
+      setCheckedTasks({});
+      setIsChecked(false);
+    } catch (error) {
+      console.error("Batch delete error:", error);
+      showToast("error", "Failed to delete tasks.");
+    }
   };
 
   const handleChange = (key: keyof Task, value: any) => {
