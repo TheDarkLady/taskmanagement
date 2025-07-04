@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { toast } from "react-toastify";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc,updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useAuth } from "../firebase/AuthContext";
 
@@ -103,21 +103,46 @@ const OverlayStatusbar: React.FC<Props> = ({
     }
   };
 
-  const handleChange = (key: keyof Task, value: any) => {
-    setTaskList((prev) =>
-      prev.map((task) =>
-        checkedTasks[task.id] ? { ...task, [key]: value } : task
-      )
-    );
+  const handleChange = async (key: keyof Task, value: any) => {
+    const checkedTaskIds = Object.keys(checkedTasks);
+    const user = currentUser;
 
-    setFilteredTasks((prev) =>
-      prev.map((task) =>
-        checkedTasks[task.id] ? { ...task, [key]: value } : task
-      )
-    );
-    setCheckedTasks({});
-    setIsChecked(false);
-    showToast("info", "Task saved successfully!");
+    if (!user?.uid) {
+      showToast("error", "User not logged in.");
+      return;
+    }
+
+    try {
+      // Update Firestore for each checked task
+      await Promise.all(
+        checkedTaskIds.map((id) =>
+          // use updateDoc instead of setDoc to modify specific fields
+          updateDoc(doc(db, "Users", user.uid, "tasks", id), {
+            [key]: value,
+          })
+        )
+      );
+
+      // Update local state after Firestore update
+      setTaskList((prev) =>
+        prev.map((task) =>
+          checkedTasks[task.id] ? { ...task, [key]: value } : task
+        )
+      );
+
+      setFilteredTasks((prev) =>
+        prev.map((task) =>
+          checkedTasks[task.id] ? { ...task, [key]: value } : task
+        )
+      );
+
+      setCheckedTasks({});
+      setIsChecked(false);
+      showToast("info", "Task status updated successfully!");
+    } catch (error) {
+      console.error("Failed to update tasks:", error);
+      showToast("error", "Failed to update tasks in Firestore.");
+    }
   };
 
   return (

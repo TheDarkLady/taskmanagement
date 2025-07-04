@@ -18,6 +18,9 @@ import {
 import DatePicker from "react-datepicker";
 import { Task } from "../types/Task";
 import { toast } from "react-toastify";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+import { useAuth } from "../firebase/AuthContext";
 
 interface EditPopUpProps {
   task: Task;
@@ -38,6 +41,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [editedTask, setEditedTask] = useState<Task>(task);
+  const { currentUser } = useAuth();
 
   const showToast = (
     type: "success" | "error" | "info" | "warn",
@@ -70,16 +74,35 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
     }
   };
 
-  const handleSave = () => {
-    setTaskList((prev) =>
-      prev.map((t) => (t.id === task.id ? editedTask : t))
-    );
-    setFilteredTasks((prev) =>
-      prev.map((t) => (t.id === task.id ? editedTask : t))
-    );
-    setOpen(false);
-    setDropDownOpen(false);
-    showToast("info", "Task saved successfully!");
+  const handleSave = async () => {
+    const user = currentUser;
+
+    if (!user?.uid) {
+      showToast("error", "User not logged in.");
+      return;
+    }
+
+    try {
+      // Update Firestore
+      await updateDoc(doc(db, "Users", user.uid, "tasks", editedTask.id), {
+        ...editedTask,
+      });
+
+      // Update local state
+      setTaskList((prev) =>
+        prev.map((t) => (t.id === editedTask.id ? editedTask : t))
+      );
+      setFilteredTasks((prev) =>
+        prev.map((t) => (t.id === editedTask.id ? editedTask : t))
+      );
+
+      setOpen(false);
+      setDropDownOpen(false);
+      showToast("info", "Task updated successfully!");
+    } catch (error) {
+      console.error("Error updating task in Firestore:", error);
+      showToast("error", "Failed to update task in Firestore.");
+    }
   };
 
   return (
@@ -188,9 +211,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                             <SelectItem value="In Progress">
                               In Progress
                             </SelectItem>
-                            <SelectItem value="completed">
-                              Completed
-                            </SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -256,9 +277,9 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
               <span
                 className="text-[#000] w-full h-full block"
-                onClick={() => { 
+                onClick={() => {
                   // console.log("Clicked Delete on task:", task.id);
-                  handleDeleteTask(editedTask.id)
+                  handleDeleteTask(editedTask.id);
                 }}
               >
                 Delete
