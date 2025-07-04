@@ -9,7 +9,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import EditPopUp from "./EditPopUp";
 import { Task } from "../types/Task";
-import { v4 as uuidv4 } from "uuid";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
