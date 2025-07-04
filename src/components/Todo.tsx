@@ -19,6 +19,7 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase"; // adjust path if needed
 import { useAuth } from "../firebase/AuthContext";
@@ -196,22 +197,33 @@ const Todo: React.FC<Props> = ({
     event.dataTransfer.setData("text/plain", taskId);
   };
 
-  const handleDrop = (
+  const handleDrop = async (
     event: React.DragEvent<HTMLDivElement>,
     newStatus: string
   ) => {
     event.preventDefault();
     const taskId = event.dataTransfer.getData("text/plain");
-    setTaskList((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
-    setFilteredTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+    // setTaskList((prevTasks) =>
+    //   prevTasks.map((task) =>
+    //     task.id === taskId ? { ...task, status: newStatus } : task
+    //   )
+    // );
+    // setFilteredTasks((prevTasks) =>
+    //   prevTasks.map((task) =>
+    //     task.id === taskId ? { ...task, status: newStatus } : task
+    //   )
+    // );
+
+    if (!taskId || !currentUser?.uid) return;
+
+    try {
+      const taskRef = doc(db, "Users", currentUser.uid, "tasks", taskId);
+      await updateDoc(taskRef, { status: newStatus });
+      showToast("info", "Task status updated");
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      showToast("error", "Could not update status.");
+    }
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -262,7 +274,10 @@ const Todo: React.FC<Props> = ({
     }
 
     try {
-      console.log("Deleting path: ", `Users/${currentUser.uid}/tasks/${taskId}`);
+      console.log(
+        "Deleting path: ",
+        `Users/${currentUser.uid}/tasks/${taskId}`
+      );
       await deleteDoc(doc(db, "Users", currentUser.uid, "tasks", taskId));
       showToast("error", "Task deleted");
     } catch (error) {
