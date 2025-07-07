@@ -30,9 +30,7 @@ const OverlayStatusbar: React.FC<Props> = ({
   checkedTasks = {},
   setCheckedTasks,
   setIsChecked,
-  taskList,
   setTaskList,
-  filteredTasks,
   setFilteredTasks,
 }) => {
   const checkedTasksCount = Object.keys(checkedTasks).length;
