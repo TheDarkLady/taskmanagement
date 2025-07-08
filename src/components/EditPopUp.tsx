@@ -1,3 +1,5 @@
+// +// EditPopUp.tsx
+
 import React, { useState } from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -108,7 +110,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
   return (
     <div className="relative">
       {dropDownOpen && (
-        <div className="absolute top-4 -right-0 md:left-0 w-[150px] bg-white border rounded shadow-md z-10">
+        <div className=" absolute top-4 -right-0  w-[150px] bg-white border rounded shadow-md z-10 md:left-[-70px]">
           <ul className="flex flex-col">
             {/* Edit Task */}
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
@@ -127,146 +129,144 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                     Edit
                   </span>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="sm:w-[100%] sm:max-w-[100vw]  md:w-[80%] md:max-w-[80vw]">
                   <DialogHeader>
                     <DialogTitle>Edit Task</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    {/* Title */}
-                    <div className="grid grid-cols-1 gap-4">
-                      <Label htmlFor="taskTitle">Task Title</Label>
-                      <Input
-                        id="taskTitle"
-                        value={editedTask.taskTitle}
-                        onChange={(e) =>
-                          handleChange("taskTitle", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    {/* Description */}
-                    <div className="grid grid-cols-1 gap-4">
-                      <Label htmlFor="description">Description</Label>
-                      <textarea
-                        id="description"
-                        className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] dark:text-[#fff] rounded p-2 h-[100px]"
-                        placeholder="Add a description"
-                        value={editedTask.description}
-                        onChange={(e) =>
-                          handleChange("description", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    {/* Category + Due Date */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Category */}
-                      <div className="flex flex-col">
-                        <p className="mb-2">Task Category</p>
-                        <div className="flex gap-2">
-                          {["work", "personal"].map((cat) => (
-                            <button
-                              key={cat}
-                              onClick={() => handleChange("category", cat)}
-                              className={`${
-                                editedTask.category === cat
-                                  ? "bg-[#7B1984] text-white"
-                                  : "bg-transparent border border-[#7B1984] text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
-                              } px-2 py-2 rounded-2xl border`}
-                            >
-                              {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Due Date */}
-                      <div className="flex flex-col">
-                        <p>Due On</p>
-                        <DatePicker
-                          selected={editedTask.selectedDate || null}
-                          onChange={(date) =>
-                            handleChange("selectedDate", date)
+                  <div className="flex gap-4">
+                    {/* task details */}
+                    <div className="w-[100%] border-none md:w-[75%] px-0  grid gap-4 py-4 md:px-2 border-[#0000001A] md:border-r overflow-y-auto">
+                      {/* Title */}
+                      <div className="grid grid-cols-1 gap-4">
+                        <Label htmlFor="taskTitle">Task Title</Label>
+                        <Input
+                          id="taskTitle"
+                          value={editedTask.taskTitle}
+                          onChange={(e) =>
+                            handleChange("taskTitle", e.target.value)
                           }
-                          dateFormat="dd/MM/yyyy"
-                          placeholderText="Select a date"
-                          className="py-2 px-4 border border-gray-300 rounded-md w-full bg-transparent hover:bg-[#7B1984] hover:text-[#fff]"
                         />
                       </div>
 
-                      {/* Status */}
-                      <div className="flex flex-col col-span-2">
-                        <p className="mb-2">Status</p>
-                        <Select
-                          value={editedTask.status}
-                          onValueChange={(value) =>
-                            handleChange("status", value)
+                      {/* Description */}
+                      <div className="grid grid-cols-1  gap-4">
+                        <Label htmlFor="description">Description</Label>
+                        <textarea
+                          id="description"
+                          className="border bg-transparent text-[#000] dark:bg-[#0a0a0a] dark:text-[#fff] rounded p-2 h-[100px]"
+                          placeholder="Add a description"
+                          value={editedTask.description}
+                          onChange={(e) =>
+                            handleChange("description", e.target.value)
                           }
+                        />
+                      </div>
+
+                      {/* Category + Due Date */}
+                      <div className="flex flex-row flex-wrap gap-4">
+                        {/* Category */}
+                        <div className="flex flex-col">
+                          <p className="mb-2">Task Category</p>
+                          <div className="flex  gap-2">
+                            {["work", "personal"].map((cat) => (
+                              <button
+                                key={cat}
+                                onClick={() => handleChange("category", cat)}
+                                className={`${
+                                  editedTask.category === cat
+                                    ? "bg-[#7B1984] text-white"
+                                    : "bg-transparent border border-[#7B1984] text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
+                                } px-2 py-2 rounded-2xl border`}
+                              >
+                                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Due Date */}
+                        <div className="flex flex-col">
+                          <p className="mb-2">Due On</p>
+                          <DatePicker
+                            selected={editedTask.selectedDate || null}
+                            onChange={(date) =>
+                              handleChange("selectedDate", date)
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Select a date"
+                            className="py-2 px-4 border border-gray-300 rounded-md w-full bg-transparent hover:bg-[#7B1984] hover:text-[#fff]"
+                          />
+                        </div>
+
+                        {/* Status */}
+                        <div className="flex flex-col">
+                          <p className="mb-2">Status</p>
+                          <Select
+                            value={editedTask.status}
+                            onValueChange={(value) =>
+                              handleChange("status", value)
+                            }
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="Select Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="todo">Todo</SelectItem>
+                              <SelectItem value="In Progress">
+                                In Progress
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                Completed
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* File Attachment */}
+
+                      {/* Actions */}
+                      <div className="bg-[#fff] dark:bg-[#0a0a0a] w-full flex justify-end gap-4 p-2">
+                        <button
+                          onClick={() => {
+                            setOpen(false);
+                            setDropDownOpen(false);
+                          }}
+                          className="bg-transparent text-[#7B1984] px-4 py-2 rounded-lg border border-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
                         >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select Status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="todo">Todo</SelectItem>
-                            <SelectItem value="In Progress">
-                              In Progress
-                            </SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleSave}
+                          className="bg-[#7B1984] text-white px-4 py-2 rounded-lg"
+                        >
+                          Save
+                        </button>
                       </div>
                     </div>
+                    {/* Activity Section */}
+                    <div className="w-[25%] hidden md:block">
+                      <h1 className="font-semibold text-lg mb-2">Activity</h1>
 
-                    {/* File Attachment */}
-                    <div className="grid grid-cols-1 gap-2">
-                      <Label htmlFor="taskFile">Attachment</Label>
-                      <input
-                        id="taskFile"
-                        type="file"
-                        accept="*/*"
-                        onChange={(e) =>
-                          handleChange(
-                            "attachment",
-                            e.target.files?.[0] || null
-                          )
-                        }
-                        className="border border-gray-300 rounded-md p-2"
-                      />
-
-                      {editedTask.attachment && (
-                        <div>
-                          <p className="text-sm text-gray-500">
-                            Current Attachment:
-                          </p>
-                          <a
-                            href={editedTask.attachment}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 underline"
-                          >
-                            View File
-                          </a>
-                        </div>
+                      {task?.createdAt && (
+                        <p className="text-sm text-gray-600">
+                          Created on{" "}
+                          {new Date(
+                            task.createdAt.seconds * 1000
+                          ).toLocaleString()}
+                        </p>
                       )}
-                    </div>
 
-                    {/* Actions */}
-                    <div className="bg-[#fff] dark:bg-[#0a0a0a] w-full flex justify-end gap-4 p-2">
-                      <button
-                        onClick={() => {
-                          setOpen(false);
-                          setDropDownOpen(false);
-                        }}
-                        className="bg-transparent text-[#7B1984] px-4 py-2 rounded-lg border border-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleSave}
-                        className="bg-[#7B1984] text-white px-4 py-2 rounded-lg"
-                      >
-                        Save
-                      </button>
+                      {task?.lastUpdatedField && task?.lastUpdatedAt && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {task.lastUpdatedField.charAt(0).toUpperCase() +
+                            task.lastUpdatedField.slice(1)}{" "}
+                          updated on{" "}
+                          {new Date(
+                            task.lastUpdatedAt.seconds * 1000
+                          ).toLocaleString()}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </DialogContent>

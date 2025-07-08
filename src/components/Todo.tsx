@@ -1,3 +1,5 @@
+// todo.tsx
+
 import React, { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { FaAngleUp } from "react-icons/fa6";
@@ -374,7 +376,7 @@ const Todo: React.FC<Props> = ({
                   onClick={handleAddTask}
                 >
                   Add
-                  <PiArrowBendDownLeftFill />
+                  {/* <PiArrowBendDownLeftFill /> */}
                 </Button>
                 <Button
                   className="bg-[#fff] text-[#000] px-10 py-2 rounded-[20px] flex items-center hover:bg-[#7B1984] hover:text-[#fff]"
@@ -622,7 +624,7 @@ const Todo: React.FC<Props> = ({
                         : "hidden "
                     } `}
                   >
-                    <p className="text-[#000]">{task.status}</p>
+                    <p className="text-[#000] bg-[#dddadd] px-2 py-1 rounded-[4px]">{task.status}</p>
                   </div>
                   <div
                     className={`w-auto ${
