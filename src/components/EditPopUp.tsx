@@ -43,6 +43,8 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [editedTask, setEditedTask] = useState<Task>(task);
+  const [isDetails, setIsDetails] = useState(true);
+  const [isActivity, setIsActivity] = useState(false);
   const { currentUser } = useAuth();
 
   const showToast = (
@@ -108,8 +110,19 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
         return;
       }
 
+      const timestamp = Timestamp.fromDate(new Date());
+      const newChangeLog = {
+        fields: changedFields,
+        timestamp: timestamp,
+      };
+
+      // Merge history (keep previous + new one)
+      const updatedHistory = [...(task.history || []), newChangeLog];
+
+      // Add metadata fields
       updates.updatedFields = changedFields;
-      updates.lastUpdatedAt = Timestamp.fromDate(new Date()); // ✅ Proper Firestore Timestamp
+      updates.lastUpdatedAt = timestamp;
+      updates.history = updatedHistory;
 
       await updateDoc(
         doc(db, "Users", user.uid, "tasks", editedTask.id),
@@ -160,14 +173,42 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                   </span>
                 </DialogTrigger>
                 <DialogContent className="sm:w-[100%] sm:max-w-[100vw]  md:w-[80%] md:max-w-[80vw]">
-                  <DialogHeader>
-                    <DialogTitle>Edit Task</DialogTitle>
+                  <div className="flex justify-center items-center gap-4 md:hidden">
+                    <button
+                    onClick={() => {
+                          setIsDetails(true);
+                          setIsActivity(false);
+                        }}
+                        className={`${
+                          isDetails
+                            ? "bg-[#7B1984] text-white"
+                            : "bg-transparent border border-[#7B1984] text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
+                        } px-2 py-2 rounded-2xl border`}
+                      > Details
+                      </button>
+                    <button
+                    onClick={() => {
+                          setIsDetails(false);
+                          setIsActivity(true);
+                        }}
+                        className={`${
+                          isActivity
+                            ? "bg-[#7B1984] text-white"
+                            : "bg-transparent border border-[#7B1984] text-[#7B1984] hover:bg-[#7B1984] hover:text-[#fff]"
+                        } px-2 py-2 rounded-2xl border`}
+                      > Activity
+                      </button>
+                  </div>
+                  <DialogHeader className={`${isDetails ? "block" : "hidden"} md:block`}>
+                    <DialogTitle className="">Edit Task</DialogTitle>
                   </DialogHeader>
-                  <div className="flex gap-4">
+                  
+                  <div className="flex border-t border-b border-gray-300">
+                    <div></div>
                     {/* task details */}
-                    <div className="w-[100%] border-none md:w-[75%] px-0  grid gap-4 py-4 md:px-2 border-[#0000001A] md:border-r overflow-y-auto">
+                    <div className={`${isDetails ? "grid" : "hidden"} p-4 w-[100%] border-r md:w-[75%] px-0  grid gap-4 py-4 md:px-2   overflow-y-auto`}>
                       {/* Title */}
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-1 gap-4 ">
                         <Label htmlFor="taskTitle">Task Title</Label>
                         <Input
                           id="taskTitle"
@@ -275,31 +316,45 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                       </div>
                     </div>
                     {/* Activity Section */}
-                    <div className="w-[25%] hidden md:block">
-                      <h1 className="font-semibold text-lg mb-2">Activity</h1>
-
+                    <div className={`${isActivity ? "block" : "hidden"} md:block p-0 md:p-4 w-[100%] md:w-[25%] px-0  overflow-y-auto`}>
+                      <h1 className="font-semibold text-lg mt-0 md:mt-2 border-b border-gray-300 p-2">
+                        Activity
+                      </h1>
                       {task?.createdAt && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-[#fff] p-2">
                           Created on{" "}
                           {new Date(
                             task.createdAt.seconds * 1000
                           ).toLocaleString()}
                         </p>
                       )}
-
-                      {task?.updatedFields && task?.lastUpdatedAt && (
-                        <p className="text-sm text-gray-600 mt-1">
-                          {task.updatedFields
-                            .map(
-                              (field: string) =>
-                                field.charAt(0).toUpperCase() + field.slice(1)
-                            )
-                            .join(", ")}{" "}
-                          updated on{" "}
-                          {new Date(
-                            task.lastUpdatedAt.seconds * 1000
-                          ).toLocaleString()}
-                        </p>
+                      <h1 className="font-semibold text-lg my-2 px-2">
+                        History
+                      </h1>
+                      {task?.history && task.history.length > 0 && (
+                        <div className="my-4 space-y-2">
+                          {task.history
+                            .slice() // make a shallow copy
+                            .reverse() // show most recent first
+                            .map((entry, index) => (
+                              <p
+                                key={index}
+                                className="text-sm text-gray-600 px-2"
+                              >
+                                {entry.fields
+                                  .map(
+                                    (field) =>
+                                      field.charAt(0).toUpperCase() +
+                                      field.slice(1)
+                                  )
+                                  .join(", ")}{" "}
+                                updated on{" "}
+                                {new Date(
+                                  entry.timestamp.seconds * 1000
+                                ).toLocaleString()}
+                              </p>
+                            ))}
+                        </div>
                       )}
                     </div>
                   </div>
