@@ -20,7 +20,7 @@ import {
 import DatePicker from "react-datepicker";
 import { Task } from "../types/Task";
 import { toast } from "react-toastify";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useAuth } from "../firebase/AuthContext";
 
@@ -85,25 +85,55 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
     }
 
     try {
-      // Update Firestore
-      await updateDoc(doc(db, "Users", user.uid, "tasks", editedTask.id), {
-        ...editedTask,
+      const updates: Partial<Task> = {};
+      const changedFields: string[] = [];
+
+      (
+        [
+          "taskTitle",
+          "description",
+          "category",
+          "status",
+          "selectedDate",
+        ] as (keyof Task)[]
+      ).forEach((key) => {
+        if (editedTask[key] !== task[key]) {
+          (updates as any)[key] = editedTask[key]; // <-- type-safe bypass
+          changedFields.push(key);
+        }
       });
 
-      // Update local state
+      if (changedFields.length === 0) {
+        showToast("info", "No changes detected.");
+        return;
+      }
+
+      updates.updatedFields = changedFields;
+      updates.lastUpdatedAt = Timestamp.fromDate(new Date()); // ✅ Proper Firestore Timestamp
+
+      await updateDoc(
+        doc(db, "Users", user.uid, "tasks", editedTask.id),
+        updates
+      );
+
+      const updatedTask = {
+        ...editedTask,
+        ...updates,
+      };
+
       setTaskList((prev) =>
-        prev.map((t) => (t.id === editedTask.id ? editedTask : t))
+        prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
       );
       setFilteredTasks((prev) =>
-        prev.map((t) => (t.id === editedTask.id ? editedTask : t))
+        prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
       );
 
       setOpen(false);
       setDropDownOpen(false);
-      showToast("info", "Task updated successfully!");
+      showToast("info", `Updated fields: ${changedFields.join(", ")}`);
     } catch (error) {
       console.error("Error updating task in Firestore:", error);
-      showToast("error", "Failed to update task in Firestore.");
+      showToast("error", "Failed to update task.");
     }
   };
 
@@ -257,10 +287,14 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                         </p>
                       )}
 
-                      {task?.lastUpdatedField && task?.lastUpdatedAt && (
+                      {task?.updatedFields && task?.lastUpdatedAt && (
                         <p className="text-sm text-gray-600 mt-1">
-                          {task.lastUpdatedField.charAt(0).toUpperCase() +
-                            task.lastUpdatedField.slice(1)}{" "}
+                          {task.updatedFields
+                            .map(
+                              (field: string) =>
+                                field.charAt(0).toUpperCase() + field.slice(1)
+                            )
+                            .join(", ")}{" "}
                           updated on{" "}
                           {new Date(
                             task.lastUpdatedAt.seconds * 1000

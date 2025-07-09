@@ -11,6 +11,7 @@ export interface Task {
     createdAt: Timestamp;
     lastUpdatedField?: string;
     lastUpdatedAt?: Timestamp;
+    updatedFields?: string[];
 }
 
 export interface User {
