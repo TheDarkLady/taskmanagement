@@ -163,6 +163,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                   setOpen(isOpen);
                   if (!isOpen) setDropDownOpen(false);
                 }}
+                
               >
                 <DialogTrigger asChild>
                   <span
@@ -172,7 +173,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                     Edit
                   </span>
                 </DialogTrigger>
-                <DialogContent className="sm:w-[100%] sm:max-w-[100vw]  md:w-[80%] md:max-w-[80vw]">
+                <DialogContent className="sm:w-[100%] sm:max-w-[100vw] md:w-[80%] md:max-w-[80vw] max-h-[90vh] overflow-hidden">
                   <div className="flex justify-center items-center gap-4 md:hidden">
                     <button
                     onClick={() => {
@@ -203,10 +204,10 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                     <DialogTitle className="">Edit Task</DialogTitle>
                   </DialogHeader>
                   
-                  <div className="flex border-t border-b border-gray-300">
+                  <div className="flex border-t border-b border-gray-300 h-full overflow-hidden">
                     <div></div>
                     {/* task details */}
-                    <div className={`${isDetails ? "grid" : "hidden"} p-4 w-[100%] border-r md:w-[75%] px-0  grid gap-4 py-4 md:px-2   overflow-y-auto`}>
+                    <div className={`${isDetails ? "grid" : "hidden"} p-4 w-[100%] border-r md:w-[75%] px-0  grid gap-4 py-4 md:px-2 overflow-y-auto max-h-[calc(90vh-100px)]`}>
                       {/* Title */}
                       <div className="grid grid-cols-1 gap-4 ">
                         <Label htmlFor="taskTitle">Task Title</Label>
@@ -316,7 +317,7 @@ const EditPopUp: React.FC<EditPopUpProps> = ({
                       </div>
                     </div>
                     {/* Activity Section */}
-                    <div className={`${isActivity ? "block" : "hidden"} md:block p-0 md:p-4 w-[100%] md:w-[25%] px-0  overflow-y-auto`}>
+                    <div className={`${isActivity ? "block" : "hidden"} md:block p-0 md:p-4 w-[100%] md:w-[25%] px-0  overflow-y-auto max-h-[calc(90vh-100px)]`}>
                       <h1 className="font-semibold text-lg mt-0 md:mt-2 border-b border-gray-300 p-2">
                         Activity
                       </h1>
