@@ -13,7 +13,8 @@ import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import { CiSearch } from "react-icons/ci";
 import OverlayStatusbar from "../components/OverlayStatusbar.tsx";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
+import CreatePopUp from "../components/CreatePopUp.tsx";
 
 function Dashboard() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -32,19 +33,23 @@ function Dashboard() {
   const [checkedTasks, setCheckedTasks] = useState<{ [key: string]: boolean }>(
     {}
   );
-  const showToast = (type: "success" | "error" | "info" | "warn", message: string) => {
-          toast[type](message, {
-            position: "top-center",
-            autoClose: 3000,       // Close after 3 seconds
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        };
+  const showToast = (
+    type: "success" | "error" | "info" | "warn",
+    message: string
+  ) => {
+    toast[type](message, {
+      position: "top-center",
+      autoClose: 3000, // Close after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
   const navigate = useNavigate();
   const datePickerRef = useRef<HTMLDivElement>(null);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
@@ -90,11 +95,15 @@ function Dashboard() {
 
   const statusOfTasks = ["todo", "In Progress", "completed"];
 
-  const openAddTask = () => {
-    const addTask = document.querySelector(".addtask");
-    if (addTask) {
-      addTask.classList.toggle("hidden");
-    }
+  // const openAddTask = () => {
+  //   const addTask = document.querySelector(".addtask");
+  //   if (addTask) {
+  //     addTask.classList.toggle("hidden");
+  //   }
+  // };
+
+  const openCreatePopUp = () => {
+    setIsAddTaskOpen(true);
   };
 
   function handleView() {
@@ -170,7 +179,7 @@ function Dashboard() {
         <div className="w-[100%] flex md:hidden flex-row justify-end">
           <Button
             className="flex md:hidden add-task-btn bg-[#7b1984] text-[#fff] px-5 py-2 rounded-md  items-center"
-            onClick={openAddTask}
+            onClick={openCreatePopUp}
           >
             Add task
           </Button>
@@ -239,7 +248,7 @@ function Dashboard() {
           </div>
           <Button
             className="hidden md:flex add-task-btn bg-[#7b1984] text-[#fff] px-5 py-2 rounded-md items-center"
-            onClick={openAddTask}
+            onClick={openCreatePopUp}
           >
             Add task
           </Button>
@@ -308,6 +317,10 @@ function Dashboard() {
           })}
         </div>
       </div>
+      <CreatePopUp
+        isOpen={isAddTaskOpen}
+        onClose={() => setIsAddTaskOpen(false)}
+      />
     </div>
   );
 }
